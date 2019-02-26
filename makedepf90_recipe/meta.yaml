@@ -1,0 +1,17 @@
+{% set version = "2.8.8" %}
+
+package:
+    name: makedepf90
+    version: {{ version }}
+
+source:
+    url: http://archive.ubuntu.com/ubuntu/pool/universe/m/makedepf90/makedepf90_{{ version }}.orig.tar.gz
+    md5: 257ae3b332cfef6bff1fa85ce6275930
+
+requirements:
+    build:
+        - clang_osx-64
+        - gfortran_osx-64
+    run:
+        - clang_osx-64
+        - gfortran_osx-64
