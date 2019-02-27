@@ -17,8 +17,11 @@ conda install -n mesa_sdk --use-local makedepf90
 # Activate environment
 conda activate mesa_sdk
 
-# Point to 10.9 SDK (see note on crlibm arch)
+# Point to 10.9 SDK
 export CONDA_BUILD_SYSROOT=/opt/MacOSX10.9.sdk
+
+# Point to cpp
+export CPP=cpp
 
 # Attempt MESA installation
 export MESA_DIR=~/Software/mesa-r10398
@@ -29,16 +32,15 @@ cd $MESA_DIR
 
 ## Status
 
-The installation is currently failing on testing crlibm with the error
+The installation is currently failing on testing mtx with the error
 ```
- Error in crlibm str_to_double exponent for '-1.6346727726351920E+12 ' got '12' ierr=        5010
-At line 423 of file ../public/crlibm_lib.f
-Fortran runtime error: Bad integer for item 1 in list input
+/Users/kburns/Software/mesa-r10398/mtx/test
+TEST FAILED -- compare test_output to tmp.txt
 ```
 
 ## Notes
 
-### conda-build
+### conda build
 
 We're building ndiff and makedepf90 using the conda-managed clang and gfortran compilers.
 For these to work, we need an old(?) mac SDK from [here](https://github.com/phracker/MacOSX-SDKs).
@@ -54,4 +56,12 @@ To fix this, I modified the makefile_header to supply the rpath as an additional
 The installation was failing on building crlibm with an issue relating to trying to target i386 and not finding x86_64 symbols with the 10.14 SDK inside xcode.
 This was fixed by setting `CONDA_BUILD_SYSROOT=/opt/MacOSX10.9.sdk`.
 
+### crlibm bad integer
+
+The installation was failing on testing crlibm with a fortran read error due to the linker linking to libgfortran.3.dylib, provided by the libgfortran-ng conda package, which was being pulled in by lapack.
+Uninstalling the libgfortran-ng conda package and reinstalling the libgfortran conda package results in it hitting libgfortran.4.dylib, and proceeding.
+
+### mtx cpp error
+
+The installation was failing because CPP was not set.  Fixed by setting `export CPP=cpp`.
 
