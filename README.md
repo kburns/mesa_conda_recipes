@@ -9,13 +9,16 @@ Current I'm trying to create a conda environment for osx that emulates the MESA 
 ```
 # Create mesa_sdk conda environment
 conda env create -f mesa_sdk_env.yaml
+conda activate mesa_sdk
 
 # Install extra dependencies (after building the recipes with `conda build`)
-conda install -n mesa_sdk --use-local ndiff
-conda install -n mesa_sdk --use-local makedepf90
+conda install --use-local ndiff
+conda install--use-local makedepf90
 
-# Activate environment
-conda activate mesa_sdk
+# Get rid of libgfortran.3
+conda uninstall --force libgfortan-ng
+conda uninstall --force libgfortran
+conda install libgfortran
 
 # Point to 10.9 SDK
 export CONDA_BUILD_SYSROOT=/opt/MacOSX10.9.sdk
