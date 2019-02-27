@@ -14,6 +14,9 @@ conda env create -f mesa_sdk_env.yaml
 conda install -n mesa_sdk --use-local ndiff
 conda install -n mesa_sdk --use-local makedepf90
 
+# Activate environment
+conda activate mesa_sdk
+
 # Point to 10.9 SDK (see note on crlibm arch)
 export CONDA_BUILD_SYSROOT=/opt/MacOSX10.9.sdk
 
@@ -26,7 +29,7 @@ cd $MESA_DIR
 
 ## Status
 
-The installation is currently failing on testing crlibm with the error 
+The installation is currently failing on testing crlibm with the error
 ```
  Error in crlibm str_to_double exponent for '-1.6346727726351920E+12 ' got '12' ierr=        5010
 At line 423 of file ../public/crlibm_lib.f

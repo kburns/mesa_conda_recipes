@@ -20,7 +20,7 @@ endif
 
 # CC = gcc
 # FC = gfortran
-SPECIAL_LINK_FLAGS = ${CONDA_PREFIX}/lib
+SPECIAL_LINK_FLAGS = -Wl,-rpath,${CONDA_PREFIX}/lib
 
 # step 2) specify whether isnan is supported or not (NO LONGER NEEDED!)
 
