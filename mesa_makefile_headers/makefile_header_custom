@@ -20,8 +20,7 @@ endif
 
 # CC = gcc
 # FC = gfortran
-SPECIAL_FC_FLAGS = -Wl,-rpath,${CONDA_PREFIX}/lib -L${CONDA_PREFIX}/lib
-SPECIAL_C_FLAGS  = -Wl,-rpath,${CONDA_PREFIX}/lib -L${CONDA_PREFIX}/lib
+SPECIAL_LINK_FLAGS = ${CONDA_PREFIX}/lib
 
 # step 2) specify whether isnan is supported or not (NO LONGER NEEDED!)
 
@@ -329,9 +328,9 @@ LOAD_MESA_BINARY = -L$(MESA_LIB_DIR) -lbinary $(STAR_LOAD_LIST)
 
 # LOADER creates executables
 ifeq ($(USE_MPI),YES)
-   LOADER = mpif77
+   LOADER = mpif77 $(SPECIAL_LINK_FLAGS)
 else
-   LOADER = $(FC)
+   LOADER = $(FC) $(SPECIAL_LINK_FLAGS)
 endif
 
 # LIB_TOOL creates libraries
