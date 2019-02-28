@@ -50,7 +50,7 @@ conda activate mesa_sdk
 export CONDA_BUILD_SYSROOT=/opt/MacOSX10.9.sdk
 
 # Point to cpp
-export CPP=cpp
+export CPP=/usr/local/bin/cpp-8
 
 # Attempt MESA installation
 export MESA_DIR=~/Software/mesa-r10398
@@ -61,10 +61,33 @@ cd $MESA_DIR
 
 ## Status
 
-The installation is currently failing on testing mtx with the error
+The installation is currently failing on making the star module with the error
+
 ```
-/Users/kburns/Software/mesa-r10398/mtx/test
-TEST FAILED -- compare test_output to tmp.txt
+../private/star_private_def.f90:203:47:
+
+../private/star_private_def.f90:199:37:
+
+          do i=1,num_termination_codes
+                                     2
+../private/star_private_def.f90:203:47:
+
+                      trim(termination_code_str(i-1)), i
+                                               1
+Error: Array reference at (1) out of bounds (0 < 1) in loop beginning at (2) [-Werror=do-subscript]
+../private/star_private_def.f90:296:80:
+
+../private/star_private_def.f90:293:23:
+
+          do i=1,numTlim
+                       2
+../private/star_private_def.f90:296:80:
+
+                   write(*,2) 'missing dt_why_str following ' // trim(dt_why_str(i-1)), i
+                                                                                1
+Error: Array reference at (1) out of bounds (0 < 1) in loop beginning at (2) [-Werror=do-subscript]
+f951: all warnings being treated as errors
+make: *** [star_private_def.o] Error 1
 ```
 
 ## Notes
@@ -93,4 +116,9 @@ Uninstalling the libgfortran-ng conda package and reinstalling the libgfortran c
 ### mtx cpp error
 
 The installation was failing because CPP was not set.  Fixed by setting `export CPP=cpp`.
+
+### mtx test error
+
+The installation was failing on testing mtx with a comparison error.
+To avoid, I'm just going to try moving towards homebrew compilers rather than keep working on the overlapping clang/gcc/gfortran issues from conda on mac.
 
