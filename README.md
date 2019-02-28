@@ -6,19 +6,45 @@ Current I'm trying to create a conda environment for osx that emulates the MESA 
 
 ## Procedure
 
+With conda compilers:
+
 ```
+# Build dependencies
+conda build ndiff
+conda build makedepf90
+
 # Create mesa_sdk conda environment
 conda env create -f mesa_sdk_env.yaml
 conda activate mesa_sdk
-
-# Install extra dependencies (after building the recipes with `conda build`)
-conda install --use-local ndiff
-conda install --use-local makedepf90
 
 # Get rid of libgfortran.3
 conda uninstall --force libgfortan-ng
 conda uninstall --force libgfortran
 conda install libgfortran
+
+# Point to 10.9 SDK
+export CONDA_BUILD_SYSROOT=/opt/MacOSX10.9.sdk
+
+# Point to cpp
+export CPP=cpp
+
+# Attempt MESA installation
+export MESA_DIR=~/Software/mesa-r10398
+cd $MESA_DIR
+./clean
+./install
+```
+
+With homebrew compilers:
+
+```
+# Build dependencies
+conda build ndiff
+conda build makedepf90
+
+# Create mesa_sdk conda environment
+conda env create -f mesa_sdk_env.yaml
+conda activate mesa_sdk
 
 # Point to 10.9 SDK
 export CONDA_BUILD_SYSROOT=/opt/MacOSX10.9.sdk

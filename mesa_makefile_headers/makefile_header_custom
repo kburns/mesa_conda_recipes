@@ -18,8 +18,8 @@ endif
 # NOTE: recent versions of mesa have required reduced optimization
 # in order to work with ifort; we suggest using gfortran instead of ifort if possible.
 
-CC = gcc-8
-FC = gfortran
+CC = /usr/local/bin/gcc-8
+FC = /usr/local/bin/gfortran
 #SPECIAL_LINK_FLAGS = -Wl,-rpath,${CONDA_PREFIX}/lib
 
 # step 2) specify whether isnan is supported or not (NO LONGER NEEDED!)
@@ -34,9 +34,10 @@ WHICH_LAPACK =
 LOAD_LAPACK = -L/usr/local/opt/lapack/lib -llapack
 WHICH_BLAS =
 LOAD_BLAS = -L/usr/local/opt/openblas/lib -lblas
-MKL_INCLUDE =
+
 
 # step 4) do you want to use PGPLOT with mesa/star?
+
 # you can have onscreen plots updated at each step,
 # and you can save files for making movies.  very cool!
 
@@ -80,9 +81,6 @@ MKL_INCLUDE =
 
 # NOTE: a change in USE_PGSTAR doesn't take effect until you next recompile mesa/star
 
-# for now, GYRE is only available with the mesasdk
-USE_GYRE = NO
-
 # See http://www.gnu.org/software/make/manual/make.html#Testing-Flags for findstring
 # ifneq (,$(findstring ifort,$(FC)))
 
@@ -110,52 +108,41 @@ LOAD_PGPLOT =
 # endif
 
 
+# step 5) do you want to use SE with mesa/star?
+
+# SE is now supported using run_star_extras.  contact Falk Herwig for info.
+
+# step 6) do you want to use HDF5 with mesa/star?
+# Currently we use HDF5 for weak nuclear reaction rates
+USE_HDF5 = YES
+LOAD_HDF5 = -L/usr/local/opt/hdf5/lib -lhdf5_fortran -lhdf5 -lz
+INCLUDE_HDF5 = -I/usr/local/opt/hdf5/include
 
 
-
-# step 5) Load options for HDF5, this must be compiled with the same compilier as mesa
-
-# To install hdf5 in $MESA_DIR/utils with ifort run:
-#   export CC=icc
-#   export F9X=ifort
-#   export CXX=icpc
-#   cd $MESA_DIR/utils
-#   mkdir hdf5
-#   wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8/hdf5-1.8.12/src/hdf5-1.8.12.tar.bz2
-#   tar xvf hdf5-1.8.12.tar.bz2
-#   cd hdf5-1.8.12
-#   ./configure --prefix=$MESA_DIR/utils/hdf5 --enable-fortran
-#   make
-#   make install
-#
-#
-# and set in this makefile
-# LOAD_HDF5 = -L${MESA_DIR}/utils/hdf5/lib -lhdf5_fortran -lhdf5 -lz
-# INCLUDE_HDF5 = -I${MESA_DIR}/utils/hdf5/include
-#
-# And in your shell
-# export LD_LIBRARY_PATH=$MESA_DIR/utils/hdf5/lib:$LD_LIBRARY_PATH
-
-# These are if you are using the sdk hdf5 implementation
-# LOAD_HDF5 = `mesasdk_hdf5_link`
-# INCLUDE_HDF5 = -I${MESASDK_ROOT}/include
 
 # If not YES then we don't use HDF5, thus you wont have access to custom weak rates
 # Also the rates test suite will not pass so do: /usr/bin/touch $MESA_DIR/rates/skip_test
 # if you change this option
-USE_HDF5 = NO
+#USE_HDF5 = NO
 
 
-# step 6) now do the mesa install
+# step 7) do you want to use GYRE?
+
+# if you don't plan to use GYRE and want to skip building it, then
+#USE_GYRE = NO
+# if you want to have GYRE built along with the rest of mesa, then
+#USE_GYRE = YES
+# for now, GYRE is only available with the mesasdk
+USE_GYRE = NO
+
+
+# step 8) now do the mesa install
 
 USE_OPENMP = YES
 
 USE_STUB_FOR_CRLIBM = NO
 
-# do install at the top level mesa directory
-
-# NOTE: do NOT run the install scripts at the subdirectory level
-# those are for use by the top level script
+#################################################################
 
 # Unless you are adding a new compiler to the list of options,
 # you shouldn't need to change any of the following stuff.
@@ -290,7 +277,6 @@ TEST_SRC_DIR = $(TEST_DIR)/src
 PACKAGE_DIR = ../..
 LOCAL_LIB_DIR = $(PACKAGE_DIR)/make
 MESA_LIB_DIR = $(MESA_DIR)/lib
-
 MESA_INCLUDE_DIR = $(MESA_DIR)/include
 TEST_INCLUDES = -I$(LOCAL_LIB_DIR) -I$(PACKAGE_DIR)/public -I$(MESA_INCLUDE_DIR)
 TEST_COMPILE_FLAGS = $(FCbasic) $(FCopenmp) $(TEST_INCLUDES) $(FCchecks) $(FCdebug) -c
