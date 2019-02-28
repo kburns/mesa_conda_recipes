@@ -10,7 +10,4 @@ source:
 
 requirements:
     build:
-        - clang_osx-64
-        - gfortran_osx-64
-
-
+        - {{ compiler('c') }}

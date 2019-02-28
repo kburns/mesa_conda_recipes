@@ -13,7 +13,7 @@ conda activate mesa_sdk
 
 # Install extra dependencies (after building the recipes with `conda build`)
 conda install --use-local ndiff
-conda install--use-local makedepf90
+conda install --use-local makedepf90
 
 # Get rid of libgfortran.3
 conda uninstall --force libgfortan-ng
