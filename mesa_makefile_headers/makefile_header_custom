@@ -18,9 +18,9 @@ endif
 # NOTE: recent versions of mesa have required reduced optimization
 # in order to work with ifort; we suggest using gfortran instead of ifort if possible.
 
-# CC = gcc
-# FC = gfortran
-SPECIAL_LINK_FLAGS = -Wl,-rpath,${CONDA_PREFIX}/lib
+CC = gcc-8
+FC = gfortran
+#SPECIAL_LINK_FLAGS = -Wl,-rpath,${CONDA_PREFIX}/lib
 
 # step 2) specify whether isnan is supported or not (NO LONGER NEEDED!)
 
@@ -31,9 +31,9 @@ SPECIAL_LINK_FLAGS = -Wl,-rpath,${CONDA_PREFIX}/lib
 
 # these are the standard defaults
 WHICH_LAPACK =
-LOAD_LAPACK = -llapack
+LOAD_LAPACK = -L/usr/local/opt/lapack/lib -llapack
 WHICH_BLAS =
-LOAD_BLAS = -lblas
+LOAD_BLAS = -L/usr/local/opt/openblas/lib -lblas
 MKL_INCLUDE =
 
 # step 4) do you want to use PGPLOT with mesa/star?

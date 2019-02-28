@@ -1,16 +1,19 @@
 name: mesa_sdk
 channels:
+  - local
   - conda-forge
   - defaults
 dependencies:
-  - clang_osx-64
-  - gfortran_osx-64==7.3.0
+  # - clang_osx-64
+  # - gfortran_osx-64==7.3.0
   - valgrind
   - blas
   - lapack
   - hdf5
   - pgplot
   - ffmpeg
+  - ndiff
+  - makedepf90
 
 # The GNU Project Debugger (gdb)
 # The SE library from the NuGrid project
