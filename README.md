@@ -8,7 +8,7 @@ Current I'm trying to create a conda environment for osx that emulates the MESA 
 
 ### osx
 
-The installation is currently building on osx with several array-bounds, do-subscript, stringop-overflow warnings.
+The MESA installation (without gyre) is currently building on osx with several array-bounds, do-subscript, stringop-overflow warnings.
 I have disabled `-Werror` to prevent these from halting the installation, but the tests seem to pass despite the warnings.
 
 ## Procedure
@@ -54,6 +54,7 @@ I have disabled `-Werror` to prevent these from halting the installation, but th
     * ndiff
     * makedepf90
     * mesa (eventually)
+* Add gyre support
 
 ## Development notes
 
