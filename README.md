@@ -18,7 +18,7 @@ We have disabled `-Werror` to prevent these from halting the installation, but t
 3. Download MESA to `~/Software/mesa-r10398`.
 4. Replace the makefile_header with a symlink to the one from this repo (backup the original first, if you want):
     ```
-    ln -sfn $PWD/makefile_headers/makefile_header_custom ~/Software/mesa-r10398/utils/makefile_header
+    ln -sfn $PWD/mesa_makefile_headers/makefile_header_custom ~/Software/mesa-r10398/utils/makefile_header
     ```
 5. Build the conda dependencies and environemnt:
     ```
