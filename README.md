@@ -6,8 +6,10 @@ Current I'm trying to create a conda environment for osx that emulates the MESA 
 
 ## Status
 
-The installation is currently building on osx with several warnings.
-We have disabled `-Werror` to prevent these from halting the installation, but the tests seem to pass despite the warnings.
+### osx
+
+The installation is currently building on osx with several array-bounds, do-subscript, stringop-overflow warnings.
+I have disabled `-Werror` to prevent these from halting the installation, but the tests seem to pass despite the warnings.
 
 ## Procedure
 
@@ -41,7 +43,7 @@ We have disabled `-Werror` to prevent these from halting the installation, but t
 ## Future goals/plans
 
 * Figure out and fix source of compiler warnings so we dont have to remove `-Werror`
-* Migrate to conda:
+* Migrate remaining osx dependencies from homebrew to conda:
     * pgplot
     * hdf5
     * lapack
