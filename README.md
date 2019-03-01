@@ -13,26 +13,26 @@ We have disabled `-Werror` to prevent these from halting the installation, but t
 
 ### osx
 
-1. Install the OSX 10.9 SDK from [here](https://github.com/phracker/MacOSX-SDKs) at `/opt/MacOSX10.9.sdk`.
+1. Install the osx 10.9 SDK from [here](https://github.com/phracker/MacOSX-SDKs) to `/opt/MacOSX10.9.sdk`.
 2. Install homebrew packages for gcc, openblas, lapack, hdf5, and pgplot.
-3. Download MESA to `~/Software/mesa-r10398`
-4. Then:
-
+3. Download MESA to `~/Software/mesa-r10398`.
+4. Replace the makefile_header with a symlink to the one from this repo (backup the original first, if you want):
     ```
-    # Build dependencies
-    conda build ndiff
-    conda build makedepf90
-
-    # Create mesa_sdk conda environment
+    ln -sfn makefile_headers/makefile_header_custom ~/Software/mesa-r10398/utils/makefile_header
+    ```
+5. Build the conda dependencies and environemnt:
+    ```
+    conda build ndiff_recipe
+    conda build makedepf90_recipe
     conda env create -f mesa_sdk_env.yaml
+    ```
+6. Activate the environment to install and use MESA:
+    ```
+    # Activate environment
     conda activate mesa_sdk
-
-    # Point to 10.9 SDK
-    export CONDA_BUILD_SYSROOT=/opt/MacOSX10.9.sdk
 
     # Attempt MESA installation
     export MESA_DIR=~/Software/mesa-r10398
-    ln -sfn makefile_headers/makefile_header_custom $MESA_DIR/utils/makefile_header
     cd $MESA_DIR
     ./clean
     ./install
