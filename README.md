@@ -9,7 +9,8 @@ Current I'm trying to create a conda environment for osx that emulates the MESA 
 ### osx
 
 The MESA installation (without gyre) is currently building on osx with several array-bounds, do-subscript, stringop-overflow warnings.
-I have disabled `-Werror` to prevent these from halting the installation, but the tests seem to pass despite the warnings.
+I removed `-Werror` to prevent these from halting the installation.
+The installation then seems to complete and the tests seem to pass, but the code segfaults upon running the tutorial model.
 
 ## Procedure
 
