@@ -6,20 +6,21 @@
 # But I think you'd be better off switching to a 64-bit machine.
 
 # Step 0) Check if you have set the correct environment variables
-
 ifndef MESA_DIR
 ifndef MESA_DIR_INTENTIONALLY_EMPTY
-  $(error MESA_DIR enviroment variable is not set)
+$(error MESA_DIR enviroment variable is not set)
 endif
 endif
+
 
 # step 1) specify your compilers
 
 # NOTE: recent versions of mesa have required reduced optimization
 # in order to work with ifort; we suggest using gfortran instead of ifort if possible.
 
-CC = /usr/local/bin/gcc-8
 FC = /usr/local/bin/gfortran
+CC = /usr/local/bin/gcc-8
+CPP = /usr/local/bin/cpp-8
 #SPECIAL_LINK_FLAGS = -Wl,-rpath,${CONDA_PREFIX}/lib
 
 # step 2) specify whether isnan is supported or not (NO LONGER NEEDED!)
@@ -29,83 +30,19 @@ FC = /usr/local/bin/gfortran
 
 # step 3) specify which BLAS and LAPACK libraries to use for mesa/mtx
 
-# these are the standard defaults
 WHICH_LAPACK =
-LOAD_LAPACK = -L/usr/local/opt/lapack/lib -llapack
 WHICH_BLAS =
+LOAD_LAPACK = -L/usr/local/opt/lapack/lib -llapack
 LOAD_BLAS = -L/usr/local/opt/openblas/lib -lblas
 
 
 # step 4) do you want to use PGPLOT with mesa/star?
 
-# you can have onscreen plots updated at each step,
-# and you can save files for making movies.  very cool!
+USE_PGSTAR = YES
+LOAD_PGPLOT = -L /usr/local/opt/pgplot/lib -lpgplot -L /usr/local/opt/libpng/lib -lpng -lz
 
 # NOTE: you need to have a PGPLOT built using the same fortran and c compiler as you
 # are using for mesa.
-
-# if you don't already have a compatible pgplot,
-# follow the instructions in pgplot/README
-
-# to access pgplot from mesa/star,
-# set USE_PGSTAR = YES and set LOAD_PGPLOT to load the libraries.
-# in mesa/star, set the control parameter pgstar_flag = .true. in &star_job
-# when you run star it will open a window using X and draw plots using PGSTAR
-# the plots will be updated each time a log entry is made.
-# see star/test/src/pgstar_defaults.dek for details.
-
-# NOTE: if you have libpng, then include '-lpng' in the LOAD_PGPLOT line.
-# the *.png files are excellent for making movies.
-# but if you don't have libpng and can't get it, no problem; it isn't required.
-# just remove '-lpng' from the LOAD_PGPLOT line.
-
-# Similarly, if you don't have X windows and don't want to make onscreen plots,
-# then you can load PGPLOT without it.  Just delete the X stuff from LOAD_PGPLOT.
-
-# for users of Red Hat OS: Georgios Magkotsios reports success with these settings:
-#LOAD_PGPLOT = -L${PGPLOT_DIR} -lpgplot -L/usr/lib64 -lX11 -lsvml -lpng
-#FCstatic = -shared-intel #-Bstatic -static-intel
-
-# for Ubuntu, Philip Pinto found these libraries to be necessary:
-#LOAD_PGPLOT = -L${PGPLOT_DIR} -lpgplot  -lX11 -lxcb -lXau -lXdmcp -lXext -lpng -lz
-
-# for Fedora 12 (x86_64), Mike Zingale reported that the following worked
-# 1. at the terminal:
-#  yum install pgplot pgplot-devel
-# 2. in the mesa/util/makefile_header
-# USE_PGSTAR = YES
-# LOAD_PGPLOT = -lpgplot -L/usr/lib64 -lX11 -lpng
-# 3. it is also important that the following environment variable be set:
-# export PGPLOT_DIR=/usr/share/pgplot/
-
-
-# NOTE: a change in USE_PGSTAR doesn't take effect until you next recompile mesa/star
-
-# See http://www.gnu.org/software/make/manual/make.html#Testing-Flags for findstring
-# ifneq (,$(findstring ifort,$(FC)))
-
-# USE_PGSTAR = NO
-# LOAD_PGPLOT =
-
-#USE_PGSTAR = YES
-#LOAD_PGPLOT = -L/Users/bpaxton/mesa/utils/pgplot -lpgplot -L/usr/X11R6/lib -lX11 -lpng
-#LOAD_PGPLOT = -L/rpod2/opt/pgplot -lpgplot -L/usr/X11R6/lib -lX11 -lpng
-
-# else
-# ifneq (,$(findstring gfortran,$(FC)))
-
-# #USE_PGSTAR = NO
-# #LOAD_PGPLOT =
-# USE_PGSTAR = YES
-# LOAD_PGPLOT = -L/Users/bpaxton/mesa/utils/pgplot_gfortran -lpgplot -L/usr/X11R6/lib -lX11 -lpng
-
-# else
-
-USE_PGSTAR = NO
-LOAD_PGPLOT =
-
-# endif
-# endif
 
 
 # step 5) do you want to use SE with mesa/star?
@@ -119,21 +56,12 @@ LOAD_HDF5 = -L/usr/local/opt/hdf5/lib -lhdf5_fortran -lhdf5 -lz
 INCLUDE_HDF5 = -I/usr/local/opt/hdf5/include
 
 
-
-# If not YES then we don't use HDF5, thus you wont have access to custom weak rates
-# Also the rates test suite will not pass so do: /usr/bin/touch $MESA_DIR/rates/skip_test
-# if you change this option
-#USE_HDF5 = NO
-
-
 # step 7) do you want to use GYRE?
 
 # if you don't plan to use GYRE and want to skip building it, then
-#USE_GYRE = NO
+USE_GYRE = NO
 # if you want to have GYRE built along with the rest of mesa, then
 #USE_GYRE = YES
-# for now, GYRE is only available with the mesasdk
-USE_GYRE = NO
 
 
 # step 8) now do the mesa install
@@ -148,94 +76,41 @@ USE_STUB_FOR_CRLIBM = NO
 # you shouldn't need to change any of the following stuff.
 # It simply defines things for use by the module makefiles.
 
+SKIP_NAN_TRAPS = YES
+#      fill_arrays_with_NaNs = .true. ! in star, do this along with checking for nans
 
-ifneq (,$(findstring ifort,$(FC)))
+FCbasic = -Wno-uninitialized -fno-range-check -fmax-errors=12 $(SPECIAL_FC_FLAGS) $(FCbasic2)
+FCbasic2 =  -fprotect-parens -fno-sign-zero -fbacktrace -ggdb -finit-real=snan
 
-#FCbasic = $(SPECIAL_FC_FLAGS) -assume protect-parens -fp-model source -prec-div -prec-sqrt -ftz -traceback -error-limit 6
-FCbasic = $(SPECIAL_FC_FLAGS) -assume protect-parens -fp-model source -prec-div -prec-sqrt -traceback -error-limit 6
+# Set the fortran standard to compile against, files that can't be compiled to the standard and are
+# unfixable should add a statement like:  $(filter-out -std=f2008, $(COMPILE))
+# to filter out the option in their makefile
+FCstandard = -std=f2008 -Wno-error=tabs
 
-# use -vec-report2 to check on vectorization
-
-FCimpno = -implicitnone
-FCchecks = -check uninit -check pointers -check bounds -check all
-FCwarn = -warn all -warn nounused
-FCwarn_unused = -warn unused
-FC_fixed_preprocess = -fpp
-FC_free_preprocess = -fpp
-FCfixed = -fixed -132 $(FC_fixed_preprocess)
-FCfixed72 = -fixed $(FC_fixed_preprocess)
-FCfree = -free $(FC_free_preprocess)
-FCopt = -O2
-FCdebug = -g
-ifeq ($(USE_OPENMP),YES)
-FCopenmp = -qopenmp -threads
-else
-FCopenmp =
-endif
-FCstatic =
-
-else
-ifneq (,$(findstring gfortran,$(FC)))
-
-FCbasic = -fno-range-check -fmax-errors=100 $(SPECIAL_FC_FLAGS) -fprotect-parens -fno-sign-zero
+# set environment variable GFORTRAN_ERROR_BACKTRACE=1
 # -Warray-temporaries
 
 FCimpno = -fimplicit-none
-FCchecks = -fbounds-check
-FCwarn = -Wunused-value -Werror -W -Wno-compare-reals -Wno-unused-parameter
+FCchecks = -fbounds-check -Wuninitialized -Warray-bounds
+#FCwarn = -Wunused-value -Werror -W -Wno-compare-reals -Wno-unused-parameter
+FCwarn = -Wunused-value -W -Wno-compare-reals -Wno-unused-parameter
+FCtrapNANs = -ffpe-trap=invalid,overflow,zero
 # -Wno-unused-parameter
 
+# note: -Werror causes warnings to be treated as errors
 FC_fixed_preprocess = -x f77-cpp-input
 FC_free_preprocess = -x f95-cpp-input
 FCfixed = -ffixed-form -ffixed-line-length-132 $(FC_fixed_preprocess)
 FCfixed72 = -ffixed-form $(FC_fixed_preprocess)
 FCfree = -ffree-form $(FC_free_preprocess)
 FCopt = -O2
-FCdebug = -g
+FCdebug =
 FCstatic =
 ifeq ($(USE_OPENMP),YES)
 FCopenmp = -fopenmp
 else
 FCopenmp =
 endif
-
-else
-
-FCbasic = UNKNOWN COMPILER
-FCchecks =
-FCwarn =
-FCfixed =
-FCfree =
-FCopt =
-FCdebug =
-FCopenmp =
-
-endif
-endif
-
-# some definitions used in the module makefiles
-MODULE_DIR = ..
-MOD_PUBLIC_DIR = $(MODULE_DIR)/public
-MOD_PRIVATE_DIR = $(MODULE_DIR)/private
-MODULE_INCLUDES = -I$(MOD_PUBLIC_DIR) -I$(MOD_PRIVATE_DIR)
-OTHER_INCLUDES = -I$(MESA_DIR)/include
-INCLUDES = $(MODULE_INCLUDES) $(OTHER_INCLUDES)
-
-COMPILE_BASIC_FLAGS = $(FCbasic) $(FCopenmp) $(FCstatic) $(INCLUDES)
-COMPILE_BASIC = $(FC) $(COMPILE_BASIC_FLAGS)
-
-COMPILE_TO_TEST   = $(COMPILE_BASIC) $(FCwarn) $(FCimpno) $(FCchecks) $(FCopt) $(FCdebug) -c
-COMPILE_TO_DEPLOY = $(COMPILE_BASIC) $(FCwarn) $(FCimpno) $(FCopt) -c
-
-COMPILE_NO_OPENMP_NO_OPT = \
-   $(FC) $(FCbasic) $(INCLUDES) $(FCwarn) $(FCimpno) $(FCchecks) $(FCdebug) -c -O
-COMPILE_ASAP = \
-   $(FC) $(FCbasic) $(INCLUDES) $(FCwarn) $(FCimpno) $(FCdebug) -c -O
-
-COMPILE_FAST = $(COMPILE_BASIC) -c
-COMPILE_NO_CHECKS = $(COMPILE_BASIC) $(FCopt) -c
-COMPILE_NO_OPT    = $(COMPILE_BASIC) $(FCwarn) $(FCimpno) $(FCchecks) $(FCdebug) -c -O
-COMPILE_DEVEL     = $(COMPILE_NO_OPT)
 
 
 # some definitions used in the module makefiles
@@ -246,7 +121,7 @@ MODULE_INCLUDES = -I$(MOD_PUBLIC_DIR) -I$(MOD_PRIVATE_DIR)
 OTHER_INCLUDES = -I$(MESA_DIR)/include $(INCLUDE_HDF5)
 INCLUDES = $(MODULE_INCLUDES) $(OTHER_INCLUDES)
 
-COMPILE_BASIC_FLAGS = $(FCbasic) $(FCopenmp) $(FCstatic) $(INCLUDES)
+COMPILE_BASIC_FLAGS = $(FCbasic) $(FCopenmp) $(FCstatic) $(FCstandard) $(INCLUDES)
 COMPILE_BASIC = $(FC) $(COMPILE_BASIC_FLAGS)
 
 COMPILE_TO_TEST   = $(COMPILE_BASIC) $(FCwarn) $(FCimpno) $(FCchecks) $(FCopt) $(FCdebug) -c
@@ -262,11 +137,12 @@ COMPILE_NO_CHECKS = $(COMPILE_BASIC) $(FCopt) -c
 COMPILE_NO_OPT    = $(COMPILE_BASIC) $(FCwarn) $(FCimpno) $(FCchecks) $(FCdebug) -c -O
 COMPILE_DEVEL     = $(COMPILE_NO_OPT)
 
+
 # some definitions used in the test makefiles and client makefiles
 
 WORK_COMPILE = \
-   $(FC) $(FCbasic) $(FCopenmp) -O0 $(FCchecks) $(FCdebug) $(FCfree) \
-   $(FC_free_preprocess) -I$(MESA_INCLUDE_DIR) $(INCLUDE_HDF5) -c
+   $(FC) $(FCbasic) $(FCopenmp) $(FCchecks) $(FCdebug) $(FCfree) \
+   -I$(MESA_INCLUDE_DIR) $(INCLUDE_HDF5) -c
 
 ifeq ($(USE_PGPLOT),YES)
 	WORK_COMPILE += -DUSE_PGPLOT
@@ -313,11 +189,7 @@ LOAD_MESA_STAR = -L$(MESA_LIB_DIR) $(STAR_LOAD_LIST)
 LOAD_MESA_BINARY = -L$(MESA_LIB_DIR) -lbinary $(STAR_LOAD_LIST)
 
 # LOADER creates executables
-ifeq ($(USE_MPI),YES)
-   LOADER = mpif77 $(SPECIAL_LINK_FLAGS)
-else
-   LOADER = $(FC) $(SPECIAL_LINK_FLAGS)
-endif
+LOADER = $(FC) $(SPECIAL_LINK_FLAGS)
 
 # LIB_TOOL creates libraries
 LIB_TOOL = ar crs
@@ -327,7 +199,7 @@ STAR_WORK_OBJS = \
    run_star_extras.o run_star.o
 
 BINARY_WORK_OBJS = \
-   $(STAR_WORK_OBJS) run_binary_extras.o run_binary.o
+   run_star_extras.o run_binary_extras.o run_binary.o
 
 #Test if we are on windows
 BUILD_ON_WINDOWS=NO

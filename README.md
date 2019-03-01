@@ -4,93 +4,56 @@ This repo contains in-progress work towards creating conda recipes for MESA buil
 
 Current I'm trying to create a conda environment for osx that emulates the MESA SDK and allows for MESA to be built.
 
-## Procedure
-
-With conda compilers:
-
-```
-# Build dependencies
-conda build ndiff
-conda build makedepf90
-
-# Create mesa_sdk conda environment
-conda env create -f mesa_sdk_env.yaml
-conda activate mesa_sdk
-
-# Get rid of libgfortran.3
-conda uninstall --force libgfortan-ng
-conda uninstall --force libgfortran
-conda install libgfortran
-
-# Point to 10.9 SDK
-export CONDA_BUILD_SYSROOT=/opt/MacOSX10.9.sdk
-
-# Point to cpp
-export CPP=cpp
-
-# Attempt MESA installation
-export MESA_DIR=~/Software/mesa-r10398
-cd $MESA_DIR
-./clean
-./install
-```
-
-With homebrew compilers:
-
-```
-# Build dependencies
-conda build ndiff
-conda build makedepf90
-
-# Create mesa_sdk conda environment
-conda env create -f mesa_sdk_env.yaml
-conda activate mesa_sdk
-
-# Point to 10.9 SDK
-export CONDA_BUILD_SYSROOT=/opt/MacOSX10.9.sdk
-
-# Point to cpp
-export CPP=/usr/local/bin/cpp-8
-
-# Attempt MESA installation
-export MESA_DIR=~/Software/mesa-r10398
-cd $MESA_DIR
-./clean
-./install
-```
-
 ## Status
 
-The installation is currently failing on making the star module with the error
+The installation is currently building on osx with several warnings.
+We have disabled `-Werror` to prevent these from halting the installation, but the tests seem to pass despite the warnings.
 
-```
-../private/star_private_def.f90:203:47:
+## Procedure
 
-../private/star_private_def.f90:199:37:
+### osx
 
-          do i=1,num_termination_codes
-                                     2
-../private/star_private_def.f90:203:47:
+1. Install the OSX 10.9 SDK from [here](https://github.com/phracker/MacOSX-SDKs) at `/opt/MacOSX10.9.sdk`.
+2. Install homebrew packages for gcc, openblas, lapack, hdf5, and pgplot.
+3. Download MESA to `~/Software/mesa-r10398`
+4. Then:
 
-                      trim(termination_code_str(i-1)), i
-                                               1
-Error: Array reference at (1) out of bounds (0 < 1) in loop beginning at (2) [-Werror=do-subscript]
-../private/star_private_def.f90:296:80:
+    ```
+    # Build dependencies
+    conda build ndiff
+    conda build makedepf90
 
-../private/star_private_def.f90:293:23:
+    # Create mesa_sdk conda environment
+    conda env create -f mesa_sdk_env.yaml
+    conda activate mesa_sdk
 
-          do i=1,numTlim
-                       2
-../private/star_private_def.f90:296:80:
+    # Point to 10.9 SDK
+    export CONDA_BUILD_SYSROOT=/opt/MacOSX10.9.sdk
 
-                   write(*,2) 'missing dt_why_str following ' // trim(dt_why_str(i-1)), i
-                                                                                1
-Error: Array reference at (1) out of bounds (0 < 1) in loop beginning at (2) [-Werror=do-subscript]
-f951: all warnings being treated as errors
-make: *** [star_private_def.o] Error 1
-```
+    # Attempt MESA installation
+    export MESA_DIR=~/Software/mesa-r10398
+    ln -sfn makefile_headers/makefile_header_custom $MESA_DIR/utils/makefile_header
+    cd $MESA_DIR
+    ./clean
+    ./install
+    ```
 
-## Notes
+## Future goals/plans
+
+* Figure out and fix source of compiler warnings so we dont have to remove `-Werror`
+* Migrate to conda:
+    * pgplot
+    * hdf5
+    * lapack
+    * blas
+    * gcc
+* Get conda linux build working
+* Submit conda packages:
+    * ndiff
+    * makedepf90
+    * mesa (eventually)
+
+## Development notes
 
 ### conda build
 
