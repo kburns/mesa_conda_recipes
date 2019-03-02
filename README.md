@@ -8,9 +8,8 @@ Current I'm trying to create a conda environment for osx that emulates the MESA 
 
 ### osx
 
-The MESA installation (without gyre) is currently building on osx with several array-bounds, do-subscript, stringop-overflow warnings.
-I removed `-Werror` to prevent these from halting the installation.
-The installation then seems to complete and the tests seem to pass, but the code segfaults upon running the tutorial model.
+The MESA r10398 installation (without gyre or hdf5) is currently building on osx using a GCC 7.3 stack from homebrew.
+Although the installation completes and the tests pass, the code segfaults upon running the tutorial model.
 
 ## Procedure
 
@@ -88,4 +87,13 @@ The installation was failing because CPP was not set.  Fixed by setting `export 
 
 The installation was failing on testing mtx with a comparison error.
 To avoid, I'm just going to try moving towards homebrew compilers rather than keep working on the overlapping clang/gcc/gfortran issues from conda on mac.
+
+### GCC  7 vs 8
+
+Compiling with GCC 8.3 from homebrew yields various array-bounds, do-subscript, stringop-overflow warnings.
+Removing `-Werror` will prevent these from halting the installation.
+The installation then seems to complete and the tests seem to pass, but the code segfaults upon running the tutorial model.
+
+Comping with GCC 7.3 eliminates the warnings and allows compilation to complete with the `-Werror` flag, but the same segfault still occurs.
+I'm going to the 11035 prelease to see if that works with GCC > 7.2, since it also seems to be better supported by pyMesa.
 

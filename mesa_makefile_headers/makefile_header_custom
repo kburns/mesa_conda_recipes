@@ -18,9 +18,9 @@ endif
 # NOTE: recent versions of mesa have required reduced optimization
 # in order to work with ifort; we suggest using gfortran instead of ifort if possible.
 
-FC = /usr/local/bin/gfortran
-CC = /usr/local/bin/gcc-8
-CPP = /usr/local/bin/cpp-8
+FC = /usr/local/bin/gfortran-7
+CC = /usr/local/bin/gcc-7
+CPP = /usr/local/bin/cpp-7
 #SPECIAL_LINK_FLAGS = -Wl,-rpath,${CONDA_PREFIX}/lib
 
 # step 2) specify whether isnan is supported or not (NO LONGER NEEDED!)
@@ -51,9 +51,9 @@ LOAD_PGPLOT = -L /usr/local/opt/pgplot/lib -lpgplot -L /usr/local/opt/libpng/lib
 
 # step 6) do you want to use HDF5 with mesa/star?
 # Currently we use HDF5 for weak nuclear reaction rates
-USE_HDF5 = YES
-LOAD_HDF5 = -L/usr/local/opt/hdf5/lib -lhdf5_fortran -lhdf5 -lz
-INCLUDE_HDF5 = -I/usr/local/opt/hdf5/include
+USE_HDF5 = NO
+#LOAD_HDF5 = -L/usr/local/opt/hdf5/lib -lhdf5_fortran -lhdf5 -lz
+#INCLUDE_HDF5 = -I/usr/local/opt/hdf5/include
 
 
 # step 7) do you want to use GYRE?
@@ -92,8 +92,8 @@ FCstandard = -std=f2008 -Wno-error=tabs
 
 FCimpno = -fimplicit-none
 FCchecks = -fbounds-check -Wuninitialized -Warray-bounds
-#FCwarn = -Wunused-value -Werror -W -Wno-compare-reals -Wno-unused-parameter
-FCwarn = -Wunused-value -W -Wno-compare-reals -Wno-unused-parameter
+FCwarn = -Wunused-value -Werror -W -Wno-compare-reals -Wno-unused-parameter
+#FCwarn = -Wunused-value -W -Wno-compare-reals -Wno-unused-parameter
 FCtrapNANs = -ffpe-trap=invalid,overflow,zero
 # -Wno-unused-parameter
 
