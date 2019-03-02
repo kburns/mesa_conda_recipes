@@ -2,7 +2,7 @@
 
 
 # NOTE: MESA is no longer supported on 32-bit systems.  This isn't by design;
-# we simply haven't been able to get it to work!  So if you really-really want 
+# we simply haven't been able to get it to work!  So if you really-really want
 # to use an antique 32-bit system for mesa, you'll have to try to make it work yourself.
 # But I think you'd be better off switching to a 64-bit machine.
 
@@ -10,13 +10,13 @@
 
 ifndef MESA_DIR
 ifndef MESA_DIR_INTENTIONALLY_EMPTY
-  $(error MESA_DIR enviroment variable is not set)
+$(error MESA_DIR enviroment variable is not set)
 endif
 endif
 
 # step 1) specify your compilers
 
-# NOTE: recent versions of mesa have required reduced optimization 
+# NOTE: recent versions of mesa have required reduced optimization
 # in order to work with ifort; we suggest using gfortran instead of ifort if possible.
 
 CC = gcc
@@ -26,12 +26,12 @@ FC = ifort
 
 
 # if you need special flags for the compiler, define them here:
-SPECIAL_FC_FLAGS = 
-SPECIAL_C_FLAGS   = 
+SPECIAL_FC_FLAGS =
+SPECIAL_C_FLAGS   =
 
-# step 1.a) [temporary workaround for loader problem on Mac:] 
-#           go down to select the correct entry for LOAD_MATRIX 
-#           depending on whether you are on Linux or Mac 
+# step 1.a) [temporary workaround for loader problem on Mac:]
+#           go down to select the correct entry for LOAD_MATRIX
+#           depending on whether you are on Linux or Mac
 
 # step 2) specify whether isnan is supported or not
 
@@ -55,60 +55,60 @@ WHICH_LAPACK = USE_SRCS
 LOAD_LAPACK = -lmesalapack
 WHICH_BLAS = USE_SRCS
 LOAD_BLAS = -lmesablas
-MKL_INCLUDE = 
+MKL_INCLUDE =
 
-# step 4) do you want to use PGPLOT with mesa/star?                                                                                     
-# you can have onscreen plots updated at each step,                                                                                     
-# and you can save files for making movies.  very cool!                                                                                 
+# step 4) do you want to use PGPLOT with mesa/star?
+# you can have onscreen plots updated at each step,
+# and you can save files for making movies.  very cool!
 
-# NOTE: you need to have a PGPLOT built using the same fortran and c compiler as you                                                    
-# are using for mesa.                                                                                                                   
+# NOTE: you need to have a PGPLOT built using the same fortran and c compiler as you
+# are using for mesa.
 
-# if you don't already have a compatible pgplot,                                                                                         
-# follow the instructions in pgplot/README                                                                                               
+# if you don't already have a compatible pgplot,
+# follow the instructions in pgplot/README
 
-# to access pgplot from mesa/star,                                                                                                       
-# set USE_PGSTAR = YES and set LOAD_PGPLOT to load the libraries.                                                                       
-# in mesa/star, set the control parameter pgstar_flag = .true. in &star_job                                                             
-# when you run star it will open a window using X and draw plots using PGSTAR                                                           
-# the plots will be updated each time a log entry is made.                                                                               
-# see star/test/src/pgstar_defaults.dek for details.                                                                                     
+# to access pgplot from mesa/star,
+# set USE_PGSTAR = YES and set LOAD_PGPLOT to load the libraries.
+# in mesa/star, set the control parameter pgstar_flag = .true. in &star_job
+# when you run star it will open a window using X and draw plots using PGSTAR
+# the plots will be updated each time a log entry is made.
+# see star/test/src/pgstar_defaults.dek for details.
 
-# NOTE: if you have libpng, then include '-lpng' in the LOAD_PGPLOT line.                                                               
-# the *.png files are excellent for making movies.                                                                                       
-# but if you don't have libpng and can't get it, no problem; it isn't required.                                                         
-# just remove '-lpng' from the LOAD_PGPLOT line.                                                                                         
+# NOTE: if you have libpng, then include '-lpng' in the LOAD_PGPLOT line.
+# the *.png files are excellent for making movies.
+# but if you don't have libpng and can't get it, no problem; it isn't required.
+# just remove '-lpng' from the LOAD_PGPLOT line.
 
-# Similarly, if you don't have X windows and don't want to make onscreen plots,                                                         
-# then you can load PGPLOT without it.  Just delete the X stuff from LOAD_PGPLOT.                                                       
+# Similarly, if you don't have X windows and don't want to make onscreen plots,
+# then you can load PGPLOT without it.  Just delete the X stuff from LOAD_PGPLOT.
 
-# for users of Red Hat OS: Georgios Magkotsios reports success with these settings:                                                     
-#LOAD_PGPLOT = -L${PGPLOT_DIR} -lpgplot -L/usr/lib64 -lX11 -lsvml -lpng                                                                 
-#FCstatic = -shared-intel #-Bstatic -static-intel                                                                                       
+# for users of Red Hat OS: Georgios Magkotsios reports success with these settings:
+#LOAD_PGPLOT = -L${PGPLOT_DIR} -lpgplot -L/usr/lib64 -lX11 -lsvml -lpng
+#FCstatic = -shared-intel #-Bstatic -static-intel
 
-# for Ubuntu, Philip Pinto found these libraries to be necessary:                                                                       
-#LOAD_PGPLOT = -L${PGPLOT_DIR} -lpgplot  -lX11 -lxcb -lXau -lXdmcp -lXext -lpng -lz                                                    
+# for Ubuntu, Philip Pinto found these libraries to be necessary:
+#LOAD_PGPLOT = -L${PGPLOT_DIR} -lpgplot  -lX11 -lxcb -lXau -lXdmcp -lXext -lpng -lz
 
-# for Fedora 12 (x86_64), Mike Zingale reported that the following worked                                                               
-# 1. at the terminal:                                                                                                                   
-#  yum install pgplot pgplot-devel                                                                                                       
-# 2. in the mesa/util/makefile_header                                                                                                   
-# USE_PGSTAR = YES                                                                                                                       
-# LOAD_PGPLOT = -lpgplot -L/usr/lib64 -lX11 -lpng                                                                                       
-# 3. it is also important that the following environment variable be set:                                                               
-# export PGPLOT_DIR=/usr/share/pgplot/  
+# for Fedora 12 (x86_64), Mike Zingale reported that the following worked
+# 1. at the terminal:
+#  yum install pgplot pgplot-devel
+# 2. in the mesa/util/makefile_header
+# USE_PGSTAR = YES
+# LOAD_PGPLOT = -lpgplot -L/usr/lib64 -lX11 -lpng
+# 3. it is also important that the following environment variable be set:
+# export PGPLOT_DIR=/usr/share/pgplot/
 
 
 # NOTE: a change in USE_PGSTAR doesn't take effect until you next recompile mesa/star
 
-# for now, GYRE is only available with the mesasdk 
+# for now, GYRE is only available with the mesasdk
 USE_GYRE = NO
 
 # See http://www.gnu.org/software/make/manual/make.html#Testing-Flags for findstring
 ifneq (,$(findstring ifort,$(FC)))
 
 USE_PGSTAR = NO
-LOAD_PGPLOT = 
+LOAD_PGPLOT =
 
 #USE_PGSTAR = YES
 #LOAD_PGPLOT = -L/Users/bpaxton/mesa/utils/pgplot -lpgplot -L/usr/X11R6/lib -lX11 -lpng
@@ -118,14 +118,14 @@ else
 ifneq (,$(findstring gfortran,$(FC)))
 
 #USE_PGSTAR = NO
-#LOAD_PGPLOT = 
+#LOAD_PGPLOT =
 USE_PGSTAR = YES
 LOAD_PGPLOT = -L/Users/bpaxton/mesa/utils/pgplot_gfortran -lpgplot -L/usr/X11R6/lib -lX11 -lpng
 
 else
 
 USE_PGSTAR = NO
-LOAD_PGPLOT = 
+LOAD_PGPLOT =
 
 endif
 endif
@@ -137,17 +137,20 @@ endif
 # step 5) Load options for HDF5, this must be compiled with the same compilier as mesa
 
 # To install hdf5 in $MESA_DIR/utils with ifort run:
-#   export CC=icc
-#   export F9X=ifort
-#   export CXX=icpc
-#   cd $MESA_DIR/utils
-#   mkdir hdf5
-#   wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8/hdf5-1.8.12/src/hdf5-1.8.12.tar.bz2
-#   tar xvf hdf5-1.8.12.tar.bz2
-#   cd hdf5-1.8.12
-#   ./configure --prefix=$MESA_DIR/utils/hdf5 --enable-fortran
-#   make
-#   make install
+#export CC=icc
+#export F9X=ifort
+#export CXX=icpc
+#export VERSION=1.8.17
+#cd $MESA_DIR/utils
+#rm -rf hdf5* 2>/dev/null
+#wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-${VERSION%.*}/hdf5-"$VERSION"/src/hdf5-"$VERSION".tar.bz2
+#tar xvf hdf5-"$VERSION".tar.bz2
+#cd hdf5-"$VERSION"
+#CCFLAGS=-D_Float128=__float128 FCFLAGS="-D_Float128=__float128" ./configure --enable-fortran --enable-fortran2003
+#make
+#make install
+#cd $MESA_DIR
+
 #
 #
 # and set in this makefile
@@ -173,6 +176,10 @@ USE_OPENMP = YES
 
 USE_STUB_FOR_CRLIBM = NO
 
+# step 7) Build shared libraries? Needed if you want mesa to be usable in python
+
+USE_SHARED = NO
+
 # do install at the top level mesa directory
 
 # NOTE: do NOT run the install scripts at the subdirectory level
@@ -190,7 +197,7 @@ FCbasic = $(SPECIAL_FC_FLAGS) -assume protect-parens -fp-model source -prec-div 
 
 # use -vec-report2 to check on vectorization
 
-FCimpno = -implicitnone 
+FCimpno = -implicitnone
 FCchecks = -check uninit -check pointers -check bounds -check all
 FCwarn = -warn all -warn nounused
 FCwarn_unused = -warn unused
@@ -201,51 +208,81 @@ FCfixed72 = -fixed $(FC_fixed_preprocess)
 FCfree = -free $(FC_free_preprocess)
 FCopt = -O2
 FCdebug = -g
+SLOW_COMPILE =
 ifeq ($(USE_OPENMP),YES)
 FCopenmp = -qopenmp -threads
 else
-FCopenmp = 
+FCopenmp =
 endif
 FCstatic =
 
 else
 ifneq (,$(findstring gfortran,$(FC)))
 
-FCbasic = -fno-range-check -fmax-errors=100 $(SPECIAL_FC_FLAGS) -fprotect-parens -fno-sign-zero
+FCbasic = -fno-range-check -fmax-errors=100 -ggdb $(SPECIAL_FC_FLAGS) -fprotect-parens -fno-sign-zero
 # -Warray-temporaries
- 
-FCimpno = -fimplicit-none  
+
+FCimpno = -fimplicit-none
 FCchecks = -fbounds-check
-FCwarn = -Wunused-value -Werror -W -Wno-compare-reals -Wno-unused-parameter
+FCwarn = -Wunused-value -W -Wno-compare-reals -Wno-unused-parameter
+#FCwarn = -Wunused-value -Werror -W -Wno-compare-reals -Wno-unused-parameter
 # -Wno-unused-parameter
- 
+
 FC_fixed_preprocess = -x f77-cpp-input
 FC_free_preprocess = -x f95-cpp-input
 FCfixed = -ffixed-form -ffixed-line-length-132 $(FC_fixed_preprocess)
 FCfixed72 = -ffixed-form $(FC_fixed_preprocess)
 FCfree = -ffree-form $(FC_free_preprocess)
 FCopt = -O2
-FCdebug = -g
+FCdebug = -ggdb
 FCstatic =
+SLOW_COMPILE = -fno-var-tracking
 ifeq ($(USE_OPENMP),YES)
 FCopenmp = -fopenmp
 else
-FCopenmp = 
+FCopenmp =
 endif
 
 else
 
 FCbasic = UNKNOWN COMPILER
 FCchecks =
-FCwarn = 
+FCwarn =
 FCfixed =
 FCfree =
-FCopt = 
-FCdebug = 
-FCopenmp = 
+FCopt =
+FCdebug =
+FCopenmp =
+SLOW_COMPILE =
+endif
+endif
 
+
+# Flags needed for shared libraries
+ifeq ($(USE_SHARED), YES)
+   MD := $(shell realpath $(MESA_DIR)/lib) # we need this to be the evaluated at the start
+      # before the module/ makefiles override MESA_DIR
+   UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+   # Rpaths need to resolve relative to module/test folder plus the final location of the library
+   LIB_FLAGS = -fPIC -shared
+   LD_FLAGS = -Wl,-rpath=../make:../../lib:$(MD)
+   LIB_SUFFIX = so
 endif
+ifeq ($(UNAME_S),Darwin)
+   LIB_FLAGS = -dynamiclib
+   LD_FLAGS = -Wl,-rpath=../make:../../lib:$(MD)
+   LIB_SUFFIX = dylib
 endif
+   LIB_TOOL = $(FC) $(LIB_FLAGS) $(FCopenmp) $(LD_FLAGS) -o
+else
+   # Static library options
+   LIB_TOOL = ar crs
+   LIB_SUFFIX = a
+   LIB_FLAGS =
+   LIBS =
+endif
+
 
 # some definitions used in the module makefiles
 MODULE_DIR = ..
@@ -280,7 +317,7 @@ MODULE_INCLUDES = -I$(MOD_PUBLIC_DIR) -I$(MOD_PRIVATE_DIR)
 OTHER_INCLUDES = -I$(MESA_DIR)/include $(INCLUDE_HDF5)
 INCLUDES = $(MODULE_INCLUDES) $(OTHER_INCLUDES)
 
-COMPILE_BASIC_FLAGS = $(FCbasic) $(FCopenmp) $(FCstatic) $(INCLUDES)
+COMPILE_BASIC_FLAGS = $(FCbasic) $(FCopenmp) $(FCstatic) $(LIB_FLAGS) $(INCLUDES) $(LIB_FLAGS)
 COMPILE_BASIC = $(FC) $(COMPILE_BASIC_FLAGS)
 
 COMPILE_TO_TEST   = $(COMPILE_BASIC) $(FCwarn) $(FCimpno) $(FCchecks) $(FCopt) $(FCdebug) -c
@@ -301,11 +338,11 @@ COMPILE_DEVEL     = $(COMPILE_NO_OPT)
 WORK_COMPILE = \
    $(FC) $(FCbasic) $(FCopenmp) -O0 $(FCchecks) $(FCdebug) $(FCfree) \
    $(FC_free_preprocess) -I$(MESA_INCLUDE_DIR) $(INCLUDE_HDF5) -c
- 
+
 ifeq ($(USE_PGPLOT),YES)
 	WORK_COMPILE += -DUSE_PGPLOT
 endif
- 
+
 TEST_DIR = ..
 TEST_SRC_DIR = $(TEST_DIR)/src
 PACKAGE_DIR = ../..
@@ -314,8 +351,8 @@ MESA_LIB_DIR = $(MESA_DIR)/lib
 
 MESA_INCLUDE_DIR = $(MESA_DIR)/include
 TEST_INCLUDES = -I$(LOCAL_LIB_DIR) -I$(PACKAGE_DIR)/public -I$(MESA_INCLUDE_DIR)
-TEST_COMPILE_FLAGS = $(FCbasic) $(FCopenmp) $(TEST_INCLUDES) $(FCchecks) $(FCdebug) -c
-TEST_COMPILE = $(FC) $(TEST_COMPILE_FLAGS)
+TEST_COMPILE_FLAGS = $(FCbasic) $(FCopenmp) $(TEST_INCLUDES) $(FCchecks) $(FCdebug) $(LIB_FLAGS) -c
+TEST_COMPILE = $(FC) $(TEST_COMPILE_FLAGS) $(LD_FLAGS)
 
 ifeq ($(USE_STUB_FOR_CRLIBM),NO)
 LOAD_CRLIBM = -lcrlibm
@@ -332,10 +369,10 @@ LOAD_MESA_MICRO = \
 
 # macro uses micro
 LOAD_MESA_MACRO = \
-   -lionization -latm -lcolors -lmlt $(LOAD_MESA_MICRO)
+   -lionization -latm -lcolors $(LOAD_MESA_MICRO)
 
 # star_support uses macro (for now, LOAD_MESA_STAR_SUPPORT just = LOAD_MESA_MACRO)
-LOAD_MESA_STAR_SUPPORT = $(LOAD_MESA_MACRO)
+LOAD_MESA_STAR_SUPPORT = $(LOAD_MESA_MACRO)  $(LD_FLAGS)
 
 # star uses star_support
 LOAD_STAR_MODS = -lstar $(LOAD_MESA_STAR_SUPPORT)
@@ -348,22 +385,14 @@ LOAD_MESA_STAR = -L$(MESA_LIB_DIR) $(STAR_LOAD_LIST)
 LOAD_MESA_BINARY = -L$(MESA_LIB_DIR) -lbinary $(STAR_LOAD_LIST)
 
 # LOADER creates executables
-ifeq ($(USE_MPI),YES)
-   LOADER = mpif77
-else
-   LOADER = $(FC)
-endif
-
-# LIB_TOOL creates libraries
-LIB_TOOL = ar crs
-
+LOADER = $(FC)
 
 STAR_WORK_OBJS = \
-   run_star_extras.o run_star.o 
+   run_star_extras.o run_star.o
 
 BINARY_WORK_OBJS = \
    $(STAR_WORK_OBJS) run_binary_extras.o run_binary.o
-   
+
 #Test if we are on windows
 BUILD_ON_WINDOWS=NO
 ifeq ($(OS),Windows_NT)
