@@ -45,6 +45,24 @@ Current I'm trying to create a conda environment for osx that emulates the MESA 
     Need to disable HDF5 since homebrew version is build with GCC 8.3.
     Installation completes with `-Werror` flag and without previous warnings, but still segfaulst on running the tutorial model.
 
+### linux
+
+- **10398 + conda GCC 7.3 + conda HDF5**:
+    Building utils fails with the error:
+    ```
+    ../private/utils_openmp.f:38:13:
+
+              use omp_lib, only: OMP_GET_THREAD_NUM
+                 1
+    Fatal Error: Can't open module file 'omp_lib.mod' for reading at (1): No such file or directory
+    compilation terminated.
+    make: *** [utils_openmp.o] Error 1
+
+    /mnt/home/kburns/software/mesa-r10398/utils/make
+    FAILED
+    ```
+    Might be related to [this issue](https://github.com/ContinuumIO/anaconda-issues/issues/8423), but it's not clear if it has been fixed for GCC < 8.
+
 ## Procedure
 
 ### osx
