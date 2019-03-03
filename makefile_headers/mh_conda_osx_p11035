@@ -142,19 +142,13 @@ endif
 # $(error Shared libraries requires a SDK released after 20170821)
 # endif
 # endif
-# else
-#    # Static library options
-#    LIB_TOOL = ar crs
-#    LIB_SUFFIX = a
-#    LIB_FLAGS =
-#    LIBS =
-# endif
-
-# Static library options
-LIB_TOOL = ar crs
-LIB_SUFFIX = a
-LIB_FLAGS =
-LIBS =
+else
+   # Static library options
+   LIB_TOOL = ar crs
+   LIB_SUFFIX = a
+   LIB_FLAGS =
+   LIBS =
+endif
 
 
 # some definitions used in the module makefiles
