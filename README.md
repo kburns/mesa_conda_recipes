@@ -8,8 +8,35 @@ Current I'm trying to create a conda environment for osx that emulates the MESA 
 
 ### osx
 
-The MESA r10398 installation (without gyre or hdf5) is currently building on osx using a GCC 7.3 stack from homebrew.
-Although the installation completes and the tests pass, the code segfaults upon running the tutorial model.
+- **11035 + homebrew GCC 8.3 + homebrew HDF5**:
+    Installation completes with various warnings but seems to pass all tests.
+    Fails when running the tutorial model with
+    ```
+     PGPLOT_DIR is not set in your shell
+     check_window ierr          -1
+     onScreen_Plots ierr          -1
+
+                                   finished relax_num_steps
+
+     failed in do_relax_num_steps
+     star_create_pre_ms_model ierr          -1
+     do_load1_star ierr          -1
+     before_evolve_loop ierr          -1
+    ```
+    
+- **11035 + homebrew GCC 7.4**:
+    Need to disable HDF5 since homebrew version is built with GCC 8.3.
+    Installation fails on building the kap module saying it needs HDF5, even though it is disabled in the makefile_header:
+    ```
+    ```
+
+- **10398 + homebrew GCC 8.3 + homebrew HDF5**:
+    Installation produces various warnings and will only complete by removing `-Werror` flag.
+    However the code segfaults when running the tutorial model.
+    
+- **10398 + homebrew GCC 7.4**:
+    Need to disable HDF5 since homebrew version is build with GCC 8.3.
+    Installation completes with `-Werror` flag and without previous warnings, but still segfaulst on running the tutorial model.
 
 ## Procedure
 
@@ -88,12 +115,12 @@ The installation was failing because CPP was not set.  Fixed by setting `export 
 The installation was failing on testing mtx with a comparison error.
 To avoid, I'm just going to try moving towards homebrew compilers rather than keep working on the overlapping clang/gcc/gfortran issues from conda on mac.
 
-### GCC  7 vs 8
+### GCC 7 vs 8
 
 Compiling with GCC 8.3 from homebrew yields various array-bounds, do-subscript, stringop-overflow warnings.
 Removing `-Werror` will prevent these from halting the installation.
 The installation then seems to complete and the tests seem to pass, but the code segfaults upon running the tutorial model.
 
-Comping with GCC 7.3 eliminates the warnings and allows compilation to complete with the `-Werror` flag, but the same segfault still occurs.
+Comping with GCC 7.4 eliminates the warnings and allows compilation to complete with the `-Werror` flag, but the same segfault still occurs.
 I'm going to the 11035 prelease to see if that works with GCC > 7.2, since it also seems to be better supported by pyMesa.
 
