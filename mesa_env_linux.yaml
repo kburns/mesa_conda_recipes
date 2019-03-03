@@ -1,0 +1,17 @@
+name: mesa_sdk
+channels:
+  - local
+  - conda-forge/label/gcc7
+  - conda-forge
+  - defaults
+dependencies:
+  - gcc_linux-64
+  - valgrind
+  - blas
+  - lapack
+  - hdf5
+  - pgplot
+  - ffmpeg
+  - ndiff
+  - makedepf90
+
