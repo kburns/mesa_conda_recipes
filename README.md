@@ -47,6 +47,7 @@ Current I'm trying to create a conda environment for osx that emulates the MESA 
 
 - **10398 + spack GCC 7.2**:
     Fails at mtx tests, maybe due to openblas@0.3.5 built from spack?
+    Also doesn't seem to work with veclibfort from spack, or building lapack/blas from MESA sources.
 
 ### linux
 
