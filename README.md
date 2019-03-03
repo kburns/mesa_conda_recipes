@@ -23,7 +23,7 @@ Current I'm trying to create a conda environment for osx that emulates the MESA 
      do_load1_star ierr          -1
      before_evolve_loop ierr          -1
     ```
-    
+
 - **11035 + homebrew GCC 7.4**:
     Need to disable HDF5 since homebrew version is built with GCC 8.3.
     Installation fails on building the kap module saying it needs HDF5, even though it is disabled in the makefile_header:
@@ -40,10 +40,13 @@ Current I'm trying to create a conda environment for osx that emulates the MESA 
 - **10398 + homebrew GCC 8.3 + homebrew HDF5**:
     Installation produces various warnings and will only complete by removing `-Werror` flag.
     However the code segfaults when running the tutorial model.
-    
+
 - **10398 + homebrew GCC 7.4**:
     Need to disable HDF5 since homebrew version is build with GCC 8.3.
     Installation completes with `-Werror` flag and without previous warnings, but still segfaulst on running the tutorial model.
+
+- **10398 + spack GCC 7.2**:
+    Fails at mtx tests, maybe due to openblas@0.3.5 built from spack?
 
 ### linux
 
