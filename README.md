@@ -28,6 +28,13 @@ Current I'm trying to create a conda environment for osx that emulates the MESA 
     Need to disable HDF5 since homebrew version is built with GCC 8.3.
     Installation fails on building the kap module saying it needs HDF5, even though it is disabled in the makefile_header:
     ```
+    ../private/kap_aesopus.f90:28:6:
+
+       use hdf5
+          1
+    Fatal Error: Can't open module file 'hdf5.mod' for reading at (1): No such file or directory
+    compilation terminated.
+    make: *** [kap_aesopus.o] Error 1
     ```
 
 - **10398 + homebrew GCC 8.3 + homebrew HDF5**:
