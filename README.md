@@ -127,9 +127,9 @@ Current I'm trying to create a conda environment for osx that emulates the MESA 
     * blas
     * gcc
 * Get conda linux build working
-* Submit conda packages:
-    * ndiff
-    * makedepf90
+* Create conda packages:
+    * ndiff (submitted to conda-forge)
+    * makedepf90 (submitted to conda-forge)
     * mesa (eventually)
 * Add gyre support
 
