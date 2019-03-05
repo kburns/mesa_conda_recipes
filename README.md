@@ -43,18 +43,13 @@ Current I'm trying to create a conda environments for osx and linux that emulate
         - Raises errors on various bounds warnings.
         - If tests are skipped and `-Werror` flag is removed, installation completes but tutorial model segfaults.
 
-<!-- - **11035 + homebrew GCC 7.4**:
-    Need to disable HDF5 since homebrew version is built with GCC 8.3.
-    Installation fails on building the kap module saying it needs HDF5, even though it is disabled in the makefile_header:
+- **11035 + homebrew GCC 7.4 (failing)**:
+    - Need to disable HDF5 since homebrew version is built with GCC 8.3.
+    - Installation fails on building the kap module saying it needs HDF5, even though it is disabled in the makefile_header:
     ```
     ../private/kap_aesopus.f90:28:6:
-
        use hdf5
-          1
-    Fatal Error: Can't open module file 'hdf5.mod' for reading at (1): No such file or directory
-    compilation terminated.
-    make: *** [kap_aesopus.o] Error 1
-    ``` -->
+    ```
 
 - **11035 + homebrew GCC 8.3 (working)**:
     - Works with homebrew hdf5, pgplot, and openblas.
