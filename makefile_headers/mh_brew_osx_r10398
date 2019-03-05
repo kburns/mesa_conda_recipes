@@ -32,7 +32,7 @@ CPP = /usr/local/bin/cpp-7
 
 WHICH_LAPACK =
 WHICH_BLAS =
-LOAD_LAPACK = -L/usr/local/opt/lapack/lib -llapack
+LOAD_LAPACK = -L/usr/local/opt/openblas/lib -llapack
 LOAD_BLAS = -L/usr/local/opt/openblas/lib -lblas
 
 
@@ -51,9 +51,9 @@ LOAD_PGPLOT = -L/usr/local/opt/pgplot/lib -lpgplot -lz
 
 # step 6) do you want to use HDF5 with mesa/star?
 # Currently we use HDF5 for weak nuclear reaction rates
-USE_HDF5 = YES
-LOAD_HDF5 = -L/usr/local/opt/hdf5/lib -lhdf5_fortran -lhdf5 -lz
-INCLUDE_HDF5 = -I/usr/local/opt/hdf5/include
+USE_HDF5 = NO
+# LOAD_HDF5 = -L/usr/local/opt/hdf5/lib -lhdf5_fortran -lhdf5 -lz
+# INCLUDE_HDF5 = -I/usr/local/opt/hdf5/include
 
 
 # step 7) do you want to use GYRE?

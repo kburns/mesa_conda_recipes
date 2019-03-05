@@ -42,13 +42,18 @@ Current I'm trying to create a conda environment for osx that emulates the MESA 
     However the code segfaults when running the tutorial model.
 
 - **10398 + homebrew GCC 7.4**:
-    Need to disable HDF5 since homebrew version is build with GCC 8.3.
-    Installation completes with `-Werror` flag and without previous warnings, but still segfaulst on running the tutorial model.
+    - Fails with homebrew pgplot, openblas, and lapack:
+        - Fails tests in rates with small numerical differences.
+        - If tests are skipped, installation completes but tutorial model segfaults.
+    - Fails with homebrew pgplot and openblas:
+        - Fails tests in mtx, net and rates with small numerical differences.
+        - If tests are skipped, installation completes but tutorial model segfaults.
+    - Need to disable HDF5 since homebrew version is build with GCC 8.3.
 
 - **10398 + spack GCC 7.2**:
     - Works with spack hdf5 and homebrew pgplot.
     - Fails with conda hdf5, pgplot, or openblas with "undefined symbols" errors.
-    - Works with spack openblas
+    - Works with spack openblas:
         - Fails tests in mtx and net with small numerical differences.
         - Fails tests in rates with large numerical differences.
         - If tests are skipped, installation completes and tutorial model runs successfully.
@@ -56,7 +61,7 @@ Current I'm trying to create a conda environment for osx that emulates the MESA 
         - Fails tests in mtx, num, and net with small numerical differences.
         - Fails tests in rates with large numerical differences.
         - If tests are skipped, installation completes and tutorial model runs successfully.
-    - Fails with mesa src blas/lapack**:
+    - Fails with mesa src blas/lapack:
         - Fails at mtx tests with various GNU extension errors:
             ```
             gfortran -Wno-uninitialized -fno-range-check -fmax-errors=12  -fprotect-parens -fno-sign-zero -fbacktrace -ggdb -finit-real=snan   -std=f2008 -Wno-error=tabs -I../public -I../private -I../../include  -Wunused-value -Werror -W -Wno-compare-reals -Wno-unused-parameter -fimplicit-none -O2 -c -ffixed-form -ffixed-line-length-132 -x f77-cpp-input -w ../blas_src/zdotc.f
