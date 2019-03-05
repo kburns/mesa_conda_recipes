@@ -8,49 +8,7 @@ Current I'm trying to create a conda environment for osx that emulates the MESA 
 
 ### osx
 
-- **11035 + homebrew GCC 8.3 + homebrew HDF5**:
-    Installation completes with various warnings but seems to pass all tests.
-    Fails when running the tutorial model with
-    ```
-     PGPLOT_DIR is not set in your shell
-     check_window ierr          -1
-     onScreen_Plots ierr          -1
-
-                                   finished relax_num_steps
-
-     failed in do_relax_num_steps
-     star_create_pre_ms_model ierr          -1
-     do_load1_star ierr          -1
-     before_evolve_loop ierr          -1
-    ```
-
-- **11035 + homebrew GCC 7.4**:
-    Need to disable HDF5 since homebrew version is built with GCC 8.3.
-    Installation fails on building the kap module saying it needs HDF5, even though it is disabled in the makefile_header:
-    ```
-    ../private/kap_aesopus.f90:28:6:
-
-       use hdf5
-          1
-    Fatal Error: Can't open module file 'hdf5.mod' for reading at (1): No such file or directory
-    compilation terminated.
-    make: *** [kap_aesopus.o] Error 1
-    ```
-
-- **10398 + homebrew GCC 8.3 + homebrew HDF5**:
-    Installation produces various warnings and will only complete by removing `-Werror` flag.
-    However the code segfaults when running the tutorial model.
-
-- **10398 + homebrew GCC 7.4**:
-    - Fails with homebrew pgplot, openblas, and lapack:
-        - Fails tests in rates with small numerical differences.
-        - If tests are skipped, installation completes but tutorial model segfaults.
-    - Fails with homebrew pgplot and openblas:
-        - Fails tests in mtx, net and rates with small numerical differences.
-        - If tests are skipped, installation completes but tutorial model segfaults.
-    - Need to disable HDF5 since homebrew version is build with GCC 8.3.
-
-- **10398 + spack GCC 7.2**:
+- **10398 + spack GCC 7.2 (working)**:
     - Works with spack hdf5 and homebrew pgplot.
     - Fails with conda hdf5, pgplot, or openblas with "undefined symbols" errors.
     - Works with spack openblas:
@@ -69,6 +27,48 @@ Current I'm trying to create a conda environment for osx that emulates the MESA 
                 COMPLEX*16 ZA
             Error: GNU Extension: Nonstandard type declaration COMPLEX*16 at (1)
             ```
+            
+- **10398 + homebrew GCC 7.4 (failing)**:
+    - Fails with homebrew pgplot, openblas, and lapack:
+        - Fails tests in rates with small numerical differences.
+        - If tests are skipped, installation completes but tutorial model segfaults.
+    - Fails with homebrew pgplot and openblas:
+        - Fails tests in mtx, net and rates with small numerical differences.
+        - If tests are skipped, installation completes but tutorial model segfaults.
+    - Need to disable HDF5 since homebrew version is build with GCC 8.3.
+    
+- **10398 + homebrew GCC 8.3 + homebrew HDF5**:
+    Installation produces various warnings and will only complete by removing `-Werror` flag.
+    However the code segfaults when running the tutorial model.
+    
+- **11035 + homebrew GCC 7.4**:
+    Need to disable HDF5 since homebrew version is built with GCC 8.3.
+    Installation fails on building the kap module saying it needs HDF5, even though it is disabled in the makefile_header:
+    ```
+    ../private/kap_aesopus.f90:28:6:
+
+       use hdf5
+          1
+    Fatal Error: Can't open module file 'hdf5.mod' for reading at (1): No such file or directory
+    compilation terminated.
+    make: *** [kap_aesopus.o] Error 1
+    ```
+
+- **11035 + homebrew GCC 8.3 + homebrew HDF5**:
+    Installation completes with various warnings but seems to pass all tests.
+    Fails when running the tutorial model with
+    ```
+     PGPLOT_DIR is not set in your shell
+     check_window ierr          -1
+     onScreen_Plots ierr          -1
+
+                                   finished relax_num_steps
+
+     failed in do_relax_num_steps
+     star_create_pre_ms_model ierr          -1
+     do_load1_star ierr          -1
+     before_evolve_loop ierr          -1
+    ```
 
 ### linux
 
