@@ -65,7 +65,7 @@ LOAD_PGPLOT = `mesasdk_pgplot_link` -lz
 
 # step 6) do you want to use HDF5 with mesa/star?
 # Currently we use HDF5 for weak nuclear reaction rates
-USE_HDF5 = YES
+USE_HDF5 = NO
 LOAD_HDF5 = `mesasdk_hdf5_link`
 INCLUDE_HDF5 = -I${MESASDK_ROOT}/include
 

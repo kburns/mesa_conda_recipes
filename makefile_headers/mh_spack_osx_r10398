@@ -19,10 +19,10 @@ endif
 # in order to work with ifort; we suggest using gfortran instead of ifort if possible.
 
 SPACK_GCC = /Users/kburns/Git/spack/opt/spack/darwin-highsierra-x86_64/clang-10.0.0-apple/gcc-7.2.0-sz7sntwz2ah34mmbcepy6s2vls3wrrjr
-FC = gfortran
-CC = gcc
-CPP = cpp
-#SPECIAL_LINK_FLAGS = -L${SPACK_GCC_PREFIX}/lib -lgomp
+FC = $(SPACK_GCC)/bin/gfortran
+CC = $(SPACK_GCC)/bin/gcc
+CPP = $(SPACK_GCC)/bin/cpp
+
 
 # step 2) specify whether isnan is supported or not (NO LONGER NEEDED!)
 
@@ -31,21 +31,27 @@ CPP = cpp
 
 # step 3) specify which BLAS and LAPACK libraries to use for mesa/mtx
 
-# Try spack openblas
+# Try spack openblas -- works
 WHICH_LAPACK =
 WHICH_BLAS =
 SPACK_OPENBLAS = /Users/kburns/Git/spack/opt/spack/darwin-highsierra-x86_64/gcc-7.2.0/openblas-0.3.5-yin7lgvczv3bupr7howo6k3sdo5awtf2
 LOAD_LAPACK = -L$(SPACK_OPENBLAS)/lib -lopenblas
 LOAD_BLAS = -L$(SPACK_OPENBLAS)/lib -lopenblas
 
-# Try spack veclibfort
+# Try spack veclibfort -- works with more test failures
 # WHICH_LAPACK =
 # WHICH_BLAS =
 # SPACK_VECLIBFORT = /Users/kburns/Git/spack/opt/spack/darwin-highsierra-x86_64/gcc-7.2.0/veclibfort-0.4.2-izkiitonmxnsykijzbova5sbyuoulhwb
 # LOAD_LAPACK = -L$(SPACK_VECLIBFORT)/lib -lveclibfort
 # LOAD_BLAS = -L$(SPACK_VECLIBFORT)/lib -lveclibfort
 
-# Try mesa sources
+# Try conda openblas -- fails with symbol errors
+# WHICH_LAPACK =
+# WHICH_BLAS =
+# LOAD_LAPACK = -L$(CONDA_PREFIX)/lib -llapack
+# LOAD_BLAS = -L$(CONDA_PREFIX)/lib -lblas
+
+# Try mesa sources -- fails with gnu extension errors
 # WHICH_LAPACK = USE_SRCS
 # LOAD_LAPACK = -lmesalapack
 # WHICH_BLAS = USE_SRCS
@@ -55,9 +61,15 @@ LOAD_BLAS = -L$(SPACK_OPENBLAS)/lib -lopenblas
 
 # step 4) do you want to use PGPLOT with mesa/star?
 
-USE_PGSTAR = NO
-LOAD_PGPLOT =
-#LOAD_PGPLOT = -L /usr/local/opt/pgplot/lib -lpgplot -L /usr/local/opt/libpng/lib -lpng -lz
+# Try homebrew pgplot
+USE_PGSTAR = YES
+LOAD_PGPLOT = -L/usr/local/opt/pgplot/lib -lpgplot -lz
+PGPLOT_DIR = /usr/local/opt/pgplot/share
+
+# Try conda pgplot -- symbol errors
+# USE_PGSTAR = YES
+# LOAD_PGPLOT = -L$(CONDA_PREFIX)/lib -lpgplot -lz
+# PGPLOT_DIR = $(CONDA_PREFIX)/share/pgplot
 
 # NOTE: you need to have a PGPLOT built using the same fortran and c compiler as you
 # are using for mesa.
@@ -69,9 +81,17 @@ LOAD_PGPLOT =
 
 # step 6) do you want to use HDF5 with mesa/star?
 # Currently we use HDF5 for weak nuclear reaction rates
-USE_HDF5 = NO
-#LOAD_HDF5 = -L/usr/local/opt/hdf5/lib -lhdf5_fortran -lhdf5 -lz
-#INCLUDE_HDF5 = -I/usr/local/opt/hdf5/include
+
+# Try spack hdf5
+USE_HDF5 = YES
+SPACK_HDF5 = /Users/kburns/git/spack/opt/spack/darwin-highsierra-x86_64/gcc-7.2.0/hdf5-1.10.4-ouqma2vxplotgmm6yjfoxphgpt6mjtz3
+LOAD_HDF5 = -L$(SPACK_HDF5)/lib -lhdf5_fortran -lhdf5 -lz
+INCLUDE_HDF5 = -I$(SPACK_HDF5)/include
+
+# Try conda hdf5  -- symbol errors
+# USE_HDF5 = YES
+# LOAD_HDF5 = -L$(CONDA_PREFIX)/lib -lhdf5_fortran -lhdf5 -lz
+# INCLUDE_HDF5 = -I$(CONDA_PREFIX)/include
 
 
 # step 7) do you want to use GYRE?
@@ -84,7 +104,7 @@ USE_GYRE = NO
 
 # step 8) now do the mesa install
 
-USE_OPENMP = NO
+USE_OPENMP = YES
 
 USE_STUB_FOR_CRLIBM = NO
 
@@ -207,7 +227,7 @@ LOAD_MESA_STAR = -L$(MESA_LIB_DIR) $(STAR_LOAD_LIST)
 LOAD_MESA_BINARY = -L$(MESA_LIB_DIR) -lbinary $(STAR_LOAD_LIST)
 
 # LOADER creates executables
-LOADER = $(FC) $(SPECIAL_LINK_FLAGS)
+LOADER = $(FC)
 
 # LIB_TOOL creates libraries
 LIB_TOOL = ar crs

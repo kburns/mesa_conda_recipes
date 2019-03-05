@@ -45,70 +45,25 @@ Current I'm trying to create a conda environment for osx that emulates the MESA 
     Need to disable HDF5 since homebrew version is build with GCC 8.3.
     Installation completes with `-Werror` flag and without previous warnings, but still segfaulst on running the tutorial model.
 
-- **10398 + spack GCC 7.2 + spack openblas**:
-    Fails at mtx tests:
-    ```
-    gfortran   -o ../tester test_mtx_support.o test_block_tri_dble.o test_block_tri_quad.o test_square.o test_square_quad.o test_mtx.o  \
-        -L../../make -lf2crlibm -lcrlibm -lmtx -lconst -lutils -L/Users/kburns/Git/spack/opt/spack/darwin-highsierra-x86_64/gcc-7.2.0/openblas-0.3.5-yin7lgvczv3bupr7howo6k3sdo5awtf2/lib -lopenblas -L/Users/kburns/Git/spack/opt/spack/darwin-highsierra-x86_64/gcc-7.2.0/openblas-0.3.5-yin7lgvczv3bupr7howo6k3sdo5awtf2/lib -lopenblas -L../../../lib
-
-    3c3
-    <                                                       B   -1.6215408275458779D-01    1.6391349023885564D+00   -3.8454229229650846D-02   -2.8158487838788582D+00
-    ---
-    >                                                       B   -1.6215408275458812D-01    1.6391349023885562D+00   -3.8454229229650999D-02   -2.8158487838788577D+00
-
-    /Users/kburns/Software/mesa-r10398/mtx/test
-    TEST FAILED -- compare test_output to tmp.txt
-    ```
-
-- **10398 + spack GCC 7.2 + spack veclibfort**:
-    Fails at mtx tests:
-    ```
-    gfortran   -o ../tester test_mtx_support.o test_block_tri_dble.o test_block_tri_quad.o test_square.o test_square_quad.o test_mtx.o  \
-        -L../../make -lf2crlibm -lcrlibm -lmtx -lconst -lutils -L/Users/kburns/Git/spack/opt/spack/darwin-highsierra-x86_64/gcc-7.2.0/veclibfort-0.4.2-izkiitonmxnsykijzbova5sbyuoulhwb/lib -lveclibfort -L/Users/kburns/Git/spack/opt/spack/darwin-highsierra-x86_64/gcc-7.2.0/veclibfort-0.4.2-izkiitonmxnsykijzbova5sbyuoulhwb/lib -lveclibfort -L../../../lib
-
-    3c3
-    <                                                       B   -1.6215408275458795D-01    1.6391349023885562D+00   -3.8454229229650999D-02   -2.8158487838788577D+00
-    ---
-    >                                                       B   -1.6215408275458812D-01    1.6391349023885562D+00   -3.8454229229650999D-02   -2.8158487838788577D+00
-    8c8
-    <                                                      B2   -1.0851063829787229D+00    9.9999999999999956D-01    1.7975291695264239D+01
-    ---
-    >                                                      B2   -1.0851063829787233D+00    1.0000000000000000D+00    1.7975291695264243D+01
-    18,19c18,19
-    <                                               A2_init*X    1.0999999999999994D+00    2.1000000000000001D+00    3.1000000000000005D+00
-    <                                                fac A2*X    1.0999999999999994D+00    2.1000000000000001D+00    3.1000000000000001D+00
-    ---
-    >                                               A2_init*X    1.1000000000000001D+00    2.1000000000000001D+00    3.1000000000000001D+00
-    >                                                fac A2*X    1.0999999999999999D+00    2.1000000000000001D+00    3.1000000000000001D+00
-
-    /Users/kburns/Software/mesa-r10398/mtx/test
-    TEST FAILED -- compare test_output to tmp.txt
-    ```
-
-- **10398 + spack GCC 7.2 + mesa src blas/lapack**:
-    Fails at mtx tests:
-    ```
-    gfortran -Wno-uninitialized -fno-range-check -fmax-errors=12  -fprotect-parens -fno-sign-zero -fbacktrace -ggdb -finit-real=snan   -std=f2008 -Wno-error=tabs -I../public -I../private -I../../include  -Wunused-value -Werror -W -Wno-compare-reals -Wno-unused-parameter -fimplicit-none -O2 -c -ffixed-form -ffixed-line-length-132 -x f77-cpp-input -w ../blas_src/zdotc.f
-    ../blas_src/zaxpy.f:60:16:
-
-        COMPLEX*16 ZA
-                    1
-    Error: GNU Extension: Nonstandard type declaration COMPLEX*16 at (1)
-    ../blas_src/zaxpy.f:64:16:
-
-        COMPLEX*16 ZX(*),ZY(*)
-                    1
-    Error: GNU Extension: Nonstandard type declaration COMPLEX*16 at (1)
-    ../blas_src/zaxpy.f:83:12:
-
-                ZY(I) = ZY(I) + ZA*ZX(I)
-                1
-    Error: Unclassifiable statement at (1)
-    ../blas_src/zaxpy.f:95:12:
-
-                ZY(IY) = ZY(IY) + ZA*ZX(IX)
-                1
-    ```
+- **10398 + spack GCC 7.2**:
+    - Works with spack hdf5 and homebrew pgplot.
+    - Fails with conda hdf5, pgplot, or openblas with "Undefined Symbols for architecture x86_64" errors.
+    - Works with spack openblas
+        - Fails tests in mtx and net with small numerical differences.
+        - Fails tests in rates with large numerical differences.
+        - If tests are skipped, installation completes and tutorial model runs successfully.
+    - Works with spack veclibfort:
+        - Fails tests in mtx, num, and net with small numerical differences.
+        - Fails tests in rates with large numerical differences.
+        - If tests are skipped, installation completes and tutorial model runs successfully.
+    - Fails with mesa src blas/lapack**:
+        - Fails at mtx tests with various GNU extension errors:
+            ```
+            gfortran -Wno-uninitialized -fno-range-check -fmax-errors=12  -fprotect-parens -fno-sign-zero -fbacktrace -ggdb -finit-real=snan   -std=f2008 -Wno-error=tabs -I../public -I../private -I../../include  -Wunused-value -Werror -W -Wno-compare-reals -Wno-unused-parameter -fimplicit-none -O2 -c -ffixed-form -ffixed-line-length-132 -x f77-cpp-input -w ../blas_src/zdotc.f
+            ../blas_src/zaxpy.f:60:16:
+                COMPLEX*16 ZA
+            Error: GNU Extension: Nonstandard type declaration COMPLEX*16 at (1)
+            ```
 
 ### linux
 
