@@ -31,14 +31,21 @@ CPP = cpp
 
 # step 3) specify which BLAS and LAPACK libraries to use for mesa/mtx
 
+# Try spack openblas
 WHICH_LAPACK =
 WHICH_BLAS =
-# SPACK_OPENBLAS = /Users/kburns/Git/spack/opt/spack/darwin-highsierra-x86_64/gcc-7.2.0/openblas-0.3.5-yin7lgvczv3bupr7howo6k3sdo5awtf2
-# LOAD_LAPACK = -L$(SPACK_OPENBLAS)/lib -lopenblas
-# LOAD_BLAS = -L$(SPACK_OPENBLAS)/lib -lopenblas
-SPACK_VECLIBFORT = /Users/kburns/Git/spack/opt/spack/darwin-highsierra-x86_64/gcc-7.2.0/veclibfort-0.4.2-izkiitonmxnsykijzbova5sbyuoulhwb
-LOAD_LAPACK = -L$(SPACK_VECLIBFORT)/lib -lveclibfort
-LOAD_BLAS = -L$(SPACK_VECLIBFORT)/lib -lveclibfort
+SPACK_OPENBLAS = /Users/kburns/Git/spack/opt/spack/darwin-highsierra-x86_64/gcc-7.2.0/openblas-0.3.5-yin7lgvczv3bupr7howo6k3sdo5awtf2
+LOAD_LAPACK = -L$(SPACK_OPENBLAS)/lib -lopenblas
+LOAD_BLAS = -L$(SPACK_OPENBLAS)/lib -lopenblas
+
+# Try spack veclibfort
+# WHICH_LAPACK =
+# WHICH_BLAS =
+# SPACK_VECLIBFORT = /Users/kburns/Git/spack/opt/spack/darwin-highsierra-x86_64/gcc-7.2.0/veclibfort-0.4.2-izkiitonmxnsykijzbova5sbyuoulhwb
+# LOAD_LAPACK = -L$(SPACK_VECLIBFORT)/lib -lveclibfort
+# LOAD_BLAS = -L$(SPACK_VECLIBFORT)/lib -lveclibfort
+
+# Try mesa sources
 # WHICH_LAPACK = USE_SRCS
 # LOAD_LAPACK = -lmesalapack
 # WHICH_BLAS = USE_SRCS
