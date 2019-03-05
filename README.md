@@ -29,13 +29,13 @@ Current I'm trying to create a conda environment for osx that emulates the MESA 
             ```
             
 - **10398 + homebrew GCC 7.4 (failing)**:
+    - Need to disable HDF5 since homebrew version is build with GCC 8.3.
     - Fails with homebrew pgplot, openblas, and lapack:
         - Fails tests in rates with small numerical differences.
         - If tests are skipped, installation completes but tutorial model segfaults.
     - Fails with homebrew pgplot and openblas:
         - Fails tests in mtx, net and rates with small numerical differences.
         - If tests are skipped, installation completes but tutorial model segfaults.
-    - Need to disable HDF5 since homebrew version is build with GCC 8.3.
     
 - **10398 + homebrew GCC 8.3 + homebrew HDF5**:
     Installation produces various warnings and will only complete by removing `-Werror` flag.
