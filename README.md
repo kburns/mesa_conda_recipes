@@ -47,7 +47,7 @@ Current I'm trying to create a conda environment for osx that emulates the MESA 
 
 - **10398 + spack GCC 7.2**:
     - Works with spack hdf5 and homebrew pgplot.
-    - Fails with conda hdf5, pgplot, or openblas with "Undefined Symbols for architecture x86_64" errors.
+    - Fails with conda hdf5, pgplot, or openblas with "undefined symbols" errors.
     - Works with spack openblas
         - Fails tests in mtx and net with small numerical differences.
         - Fails tests in rates with large numerical differences.

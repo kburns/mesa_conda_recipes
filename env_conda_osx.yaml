@@ -1,4 +1,4 @@
-name: mesa_sdk
+name: mesa_conda
 channels:
   - local
   - conda-forge
@@ -8,7 +8,6 @@ dependencies:
   # - gfortran_osx-64==7.3.0
   - valgrind
   - openblas
-  # - lapack
   - hdf5
   - pgplot
   - ffmpeg
