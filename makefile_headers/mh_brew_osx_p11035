@@ -21,6 +21,7 @@ endif
 FC = /usr/local/bin/gfortran-8
 CC = /usr/local/bin/gcc-8
 CPP = /usr/local/bin/cpp-8
+#SPECIAL_LINK_FLAGS = -Wl,-rpath,${CONDA_PREFIX}/lib
 
 
 # step 2) specify whether isnan is supported or not (NO LONGER NEEDED!)
@@ -32,7 +33,7 @@ CPP = /usr/local/bin/cpp-8
 
 WHICH_LAPACK =
 WHICH_BLAS =
-LOAD_LAPACK = -L/usr/local/opt/openblas/lib -llapack
+LOAD_LAPACK = -L/usr/local/opt/lapack/lib -llapack
 LOAD_BLAS = -L/usr/local/opt/openblas/lib -lblas
 
 
@@ -40,6 +41,7 @@ LOAD_BLAS = -L/usr/local/opt/openblas/lib -lblas
 
 USE_PGSTAR = YES
 LOAD_PGPLOT = -L/usr/local/opt/pgplot/lib -lpgplot -lz
+PGPLOT_DIR = /usr/local/opt/pgplot/share
 
 # NOTE: you need to have a PGPLOT built using the same fortran and c compiler as you
 # are using for mesa.
@@ -70,6 +72,11 @@ USE_OPENMP = YES
 
 USE_STUB_FOR_CRLIBM = NO
 
+# step 9) Build shared libraries? Needed if you want mesa to be usable in python
+
+USE_SHARED = NO
+
+
 #################################################################
 
 # Unless you are adding a new compiler to the list of options,
@@ -79,7 +86,7 @@ USE_STUB_FOR_CRLIBM = NO
 SKIP_NAN_TRAPS = YES
 #      fill_arrays_with_NaNs = .true. ! in star, do this along with checking for nans
 
-FCbasic = -Wno-uninitialized -fno-range-check -fmax-errors=12 $(SPECIAL_FC_FLAGS) $(FCbasic2)
+FCbasic = -Wno-uninitialized -fno-range-check -fmax-errors=7 $(SPECIAL_FC_FLAGS) $(FCbasic2)
 FCbasic2 =  -fprotect-parens -fno-sign-zero -fbacktrace -ggdb -finit-real=snan
 
 # Set the fortran standard to compile against, files that can't be compiled to the standard and are
@@ -92,8 +99,8 @@ FCstandard = -std=f2008 -Wno-error=tabs
 
 FCimpno = -fimplicit-none
 FCchecks = -fbounds-check -Wuninitialized -Warray-bounds
-#FCwarn = -Wunused-value -Werror -W -Wno-compare-reals -Wno-unused-parameter
 FCwarn = -Wunused-value -W -Wno-compare-reals -Wno-unused-parameter
+#FCwarn = -Wunused-value -Werror -W -Wno-compare-reals -Wno-unused-parameter
 FCtrapNANs = -ffpe-trap=invalid,overflow,zero
 # -Wno-unused-parameter
 
@@ -104,12 +111,44 @@ FCfixed = -ffixed-form -ffixed-line-length-132 $(FC_fixed_preprocess)
 FCfixed72 = -ffixed-form $(FC_fixed_preprocess)
 FCfree = -ffree-form $(FC_free_preprocess)
 FCopt = -O2
-FCdebug =
+FCdebug = -ggdb
 FCstatic =
 ifeq ($(USE_OPENMP),YES)
 FCopenmp = -fopenmp
 else
 FCopenmp =
+endif
+
+# Flags needed for shared libraries
+ifeq ($(USE_SHARED), YES)
+   MD := $(shell realpath $(MESA_DIR)/lib) # we need this to be the evaluated at the start
+      # before the module/ makefiles override MESA_DIR
+   UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+   # Rpaths need to resolve relative to module/test folder plus the final location of the library
+   LIB_FLAGS = -fPIC -shared
+   LD_FLAGS = -Wl,-rpath=../make:../../lib:$(MD)
+   LIB_SUFFIX = so
+endif
+ifeq ($(UNAME_S),Darwin)
+   LIB_FLAGS = -dynamiclib
+   LD_FLAGS = -Wl,-rpath=../make:../../lib:$(MD)
+   LIB_SUFFIX = dylib
+endif
+   LIB_TOOL = $(FC) $(LIB_FLAGS) $(FCopenmp) $(LD_FLAGS) -o
+
+# # Check we have new enough sdk
+# ifndef MESA_DIR_INTENTIONALLY_EMPTY
+# ifeq ($(wildcard $(MESASDK_ROOT)/lib/liblapack.$(LIB_SUFFIX)),)
+# $(error Shared libraries requires a SDK released after 20170821)
+# endif
+# endif
+else
+   # Static library options
+   LIB_TOOL = ar crs
+   LIB_SUFFIX = a
+   LIB_FLAGS =
+   LIBS =
 endif
 
 
@@ -121,7 +160,7 @@ MODULE_INCLUDES = -I$(MOD_PUBLIC_DIR) -I$(MOD_PRIVATE_DIR)
 OTHER_INCLUDES = -I$(MESA_DIR)/include $(INCLUDE_HDF5)
 INCLUDES = $(MODULE_INCLUDES) $(OTHER_INCLUDES)
 
-COMPILE_BASIC_FLAGS = $(FCbasic) $(FCopenmp) $(FCstatic) $(FCstandard) $(INCLUDES)
+COMPILE_BASIC_FLAGS = $(FCbasic) $(FCopenmp) $(FCstatic) $(FCstandard) $(LIB_FLAGS) $(INCLUDES)
 COMPILE_BASIC = $(FC) $(COMPILE_BASIC_FLAGS)
 
 COMPILE_TO_TEST   = $(COMPILE_BASIC) $(FCwarn) $(FCimpno) $(FCchecks) $(FCopt) $(FCdebug) -c
@@ -155,8 +194,8 @@ LOCAL_LIB_DIR = $(PACKAGE_DIR)/make
 MESA_LIB_DIR = $(MESA_DIR)/lib
 MESA_INCLUDE_DIR = $(MESA_DIR)/include
 TEST_INCLUDES = -I$(LOCAL_LIB_DIR) -I$(PACKAGE_DIR)/public -I$(MESA_INCLUDE_DIR)
-TEST_COMPILE_FLAGS = $(FCbasic) $(FCopenmp) $(TEST_INCLUDES) $(FCchecks) $(FCdebug) -c
-TEST_COMPILE = $(FC) $(TEST_COMPILE_FLAGS)
+TEST_COMPILE_FLAGS = $(FCbasic) $(FCopenmp) $(TEST_INCLUDES) $(FCchecks) $(FCdebug) $(LIB_FLAGS) -c
+TEST_COMPILE = $(FC) $(TEST_COMPILE_FLAGS) $(LD_FLAGS)
 
 ifeq ($(USE_STUB_FOR_CRLIBM),NO)
 LOAD_CRLIBM = -lcrlibm
@@ -173,10 +212,10 @@ LOAD_MESA_MICRO = \
 
 # macro uses micro
 LOAD_MESA_MACRO = \
-   -lionization -latm -lcolors -lmlt $(LOAD_MESA_MICRO)
+   -lionization -latm -lcolors $(LOAD_MESA_MICRO)
 
 # star_support uses macro (for now, LOAD_MESA_STAR_SUPPORT just = LOAD_MESA_MACRO)
-LOAD_MESA_STAR_SUPPORT = $(LOAD_MESA_MACRO)
+LOAD_MESA_STAR_SUPPORT = $(LOAD_MESA_MACRO) $(LD_FLAGS)
 
 # star uses star_support
 LOAD_STAR_MODS = -lstar $(LOAD_MESA_STAR_SUPPORT)
@@ -188,12 +227,12 @@ endif
 LOAD_MESA_STAR = -L$(MESA_LIB_DIR) $(STAR_LOAD_LIST)
 LOAD_MESA_BINARY = -L$(MESA_LIB_DIR) -lbinary $(STAR_LOAD_LIST)
 
+# Due to slow compile with -ggdb and -O2 we add -fno-var-tracking which speeds things up alot
+# At the expense of slightly worse debug information (but no worse than -ggdb -O0 would be, as that implies -fno-var-tracking)
+SLOW_COMPILE = -fno-var-tracking
+
 # LOADER creates executables
-LOADER = $(FC)
-
-# LIB_TOOL creates libraries
-LIB_TOOL = ar crs
-
+LOADER = $(FC) $(SPECIAL_LINK_FLAGS)
 
 STAR_WORK_OBJS = \
    run_star_extras.o run_star.o

@@ -2,7 +2,7 @@
 
 This repo contains in-progress work towards creating conda recipes for MESA build requirement and perhaps eventually MESA itself.
 
-Current I'm trying to create a conda environment for osx that emulates the MESA SDK and allows for MESA to be built.
+Current I'm trying to create a conda environments for osx and linux that emulate the MESA SDK and allow for MESA to be built.
 
 ## Status
 
@@ -10,7 +10,6 @@ Current I'm trying to create a conda environment for osx that emulates the MESA 
 
 - **10398 + spack GCC 7.2 (working)**:
     - Works with spack hdf5 and homebrew pgplot.
-    - Fails with conda hdf5, pgplot, or openblas with "undefined symbols" errors.
     - Works with spack openblas:
         - Fails tests in mtx and net with small numerical differences.
         - Fails tests in rates with large numerical differences.
@@ -27,21 +26,24 @@ Current I'm trying to create a conda environment for osx that emulates the MESA 
                 COMPLEX*16 ZA
             Error: GNU Extension: Nonstandard type declaration COMPLEX*16 at (1)
             ```
-            
+    - Fails with conda hdf5, pgplot, or openblas with "undefined symbols" errors.
+
 - **10398 + homebrew GCC 7.4 (failing)**:
     - Need to disable HDF5 since homebrew version is build with GCC 8.3.
-    - Fails with homebrew pgplot, openblas, and lapack:
-        - Fails tests in rates with small numerical differences.
-        - If tests are skipped, installation completes but tutorial model segfaults.
     - Fails with homebrew pgplot and openblas:
         - Fails tests in mtx, net and rates with small numerical differences.
         - If tests are skipped, installation completes but tutorial model segfaults.
-    
-- **10398 + homebrew GCC 8.3 + homebrew HDF5**:
-    Installation produces various warnings and will only complete by removing `-Werror` flag.
-    However the code segfaults when running the tutorial model.
-    
-- **11035 + homebrew GCC 7.4**:
+    - Fails with homebrew pgplot, openblas, and lapack:
+        - Fails tests in rates with small numerical differences.
+        - If tests are skipped, installation completes but tutorial model segfaults.
+
+- **10398 + homebrew GCC 8.3 (failing)**:
+    - Fails with homebrew hdf5, pgplot, and openblas:
+        - Fails tests in mtx and net with small numerical differences.
+        - Raises errors on various bounds warnings.
+        - If tests are skipped and `-Werror` flag is removed, installation completes but tutorial model segfaults.
+
+<!-- - **11035 + homebrew GCC 7.4**:
     Need to disable HDF5 since homebrew version is built with GCC 8.3.
     Installation fails on building the kap module saying it needs HDF5, even though it is disabled in the makefile_header:
     ```
@@ -52,23 +54,16 @@ Current I'm trying to create a conda environment for osx that emulates the MESA 
     Fatal Error: Can't open module file 'hdf5.mod' for reading at (1): No such file or directory
     compilation terminated.
     make: *** [kap_aesopus.o] Error 1
-    ```
+    ``` -->
 
-- **11035 + homebrew GCC 8.3 + homebrew HDF5**:
-    Installation completes with various warnings but seems to pass all tests.
-    Fails when running the tutorial model with
-    ```
-     PGPLOT_DIR is not set in your shell
-     check_window ierr          -1
-     onScreen_Plots ierr          -1
-
-                                   finished relax_num_steps
-
-     failed in do_relax_num_steps
-     star_create_pre_ms_model ierr          -1
-     do_load1_star ierr          -1
-     before_evolve_loop ierr          -1
-    ```
+- **11035 + homebrew GCC 8.3 (working)**:
+    - Works with homebrew hdf5, pgplot, and openblas.
+        - Fails tests in mtx and net with small numerical differences.
+        - Prints various bounds warnings.
+        - If tests are skipped, installation completes and tutorial model runs, but plots do not show up and the model prints `PGPLOT /xw: cannot connect to X server []`.
+    - Works with homebrew hdf5, pgplot, openblas, and lapack.
+        - Prints various boudns warnings.
+        - Installation completes and tutorial model runs, but plots do not show up and the model prints `PGPLOT /xw: cannot connect to X server []`.
 
 ### linux
 
