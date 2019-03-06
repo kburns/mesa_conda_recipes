@@ -18,10 +18,10 @@ endif
 # NOTE: recent versions of mesa have required reduced optimization
 # in order to work with ifort; we suggest using gfortran instead of ifort if possible.
 
-FC = /usr/local/bin/gfortran-7
+FC = $(CONDA_PREFIX)/bin/gfortran
 CC = /usr/local/bin/gcc-7
 CPP = /usr/local/bin/cpp-7
-#SPECIAL_LINK_FLAGS = -Wl,-rpath,${CONDA_PREFIX}/lib
+SPECIAL_LINK_FLAGS = -Wl,-rpath,${CONDA_PREFIX}/lib
 
 
 # step 2) specify whether isnan is supported or not (NO LONGER NEEDED!)
@@ -33,14 +33,14 @@ CPP = /usr/local/bin/cpp-7
 
 WHICH_LAPACK =
 WHICH_BLAS =
-LOAD_LAPACK = -L/usr/local/opt/lapack/lib -llapack
-LOAD_BLAS = -L/usr/local/opt/openblas/lib -lblas
+LOAD_LAPACK = -L$(CONDA_PREFIX)/lib -llapack
+LOAD_BLAS = -L$(CONDA_PREFIX)/lib -lblas
 
 
 # step 4) do you want to use PGPLOT with mesa/star?
 
 USE_PGSTAR = YES
-LOAD_PGPLOT = -L /usr/local/opt/pgplot/lib -lpgplot -L /usr/local/opt/libpng/lib -lpng -lz
+LOAD_PGPLOT = -L$(CONDA_PREFIX)/lib -lpgplot -lz
 
 # NOTE: you need to have a PGPLOT built using the same fortran and c compiler as you
 # are using for mesa.
@@ -52,9 +52,9 @@ LOAD_PGPLOT = -L /usr/local/opt/pgplot/lib -lpgplot -L /usr/local/opt/libpng/lib
 
 # step 6) do you want to use HDF5 with mesa/star?
 # Currently we use HDF5 for weak nuclear reaction rates
-USE_HDF5 = NO
-#LOAD_HDF5 = -L/usr/local/opt/hdf5/lib -lhdf5_fortran -lhdf5 -lz
-#INCLUDE_HDF5 = -I/usr/local/opt/hdf5/include
+USE_HDF5 = YES
+LOAD_HDF5 = -L$(CONDA_PREFIX)/lib -lhdf5_fortran -lhdf5 -lz
+INCLUDE_HDF5 = -I$(CONDA_PREFIX)/include
 
 
 # step 7) do you want to use GYRE?
