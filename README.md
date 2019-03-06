@@ -109,19 +109,19 @@ Current I'm trying to create a conda environments for osx and linux that emulate
 
 ## Future goals/plans
 
-* Figure out and fix source of compiler warnings so we dont have to remove `-Werror`
-* Migrate remaining osx dependencies from homebrew to conda:
-    * pgplot
-    * hdf5
-    * lapack
-    * blas
-    * gcc
-* Get conda linux build working
-* Create conda packages:
-    * ndiff (submitted to conda-forge)
-    * makedepf90 (submitted to conda-forge)
-    * mesa (eventually)
-* Add gyre support
+- [ ] Figure out and fix source of compiler warnings so we dont have to remove `-Werror`
+- [ ] Migrate remaining osx dependencies from homebrew to conda:
+    - [ ] pgplot
+    - [ ] hdf5
+    - [ ] lapack
+    - [ ] blas
+    - [ ] gcc
+- [ ] Get conda linux build working
+- [ ] Create conda packages:
+    - [x] ndiff (merged into conda-forge)
+    - [ ] makedepf90 (submitted to conda-forge)
+    - [ ] mesa (eventually)
+- [ ] Add gyre support
 
 ## Development notes
 
