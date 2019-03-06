@@ -55,10 +55,10 @@ Current I'm trying to create a conda environments for osx and linux that emulate
     - Works with homebrew hdf5, pgplot, and openblas.
         - Fails tests in mtx and net with small numerical differences.
         - Prints various bounds warnings.
-        - If tests are skipped, installation completes and tutorial model runs, but plots do not show up and the model prints `PGPLOT /xw: cannot connect to X server []`.
+        - If tests are skipped, installation completes and tutorial model runs successfully.`.
     - Works with homebrew hdf5, pgplot, openblas, and lapack.
-        - Prints various boudns warnings.
-        - Installation completes and tutorial model runs, but plots do not show up and the model prints `PGPLOT /xw: cannot connect to X server []`.
+        - Prints various bounds warnings.
+        - Installation completes and tutorial model runs successfully.
 
 ### linux
 
