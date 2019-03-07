@@ -78,9 +78,12 @@ Current I'm trying to create a conda environments for osx and linux that emulate
     ```
     Might be related to [this issue](https://github.com/ContinuumIO/anaconda-issues/issues/8423), but it's not clear if it has been fixed for GCC < 8.
 
-- **11035 + conda GCC 7.3 (?)**:
-    - ? with conda hdf5, pgplot, openblas, and lapack (?).
-        - Fails tests in mtx  and net with small numerical differences.
+- **11035 + conda GCC 7.3 (working)**:
+    - Working with conda hdf5, pgplot, and openblas.
+        - Lapack installed but openblas gets picked up by linker.
+        - Fails tests in mtx and net with small numerical differences.
+        - If tests are skipped, installation completes and tutorial model runs successfully.
+        - To get plots, X11 forwarding must be enabled in SSH to server and to worker inside salloc.
 
 ## Procedure
 
