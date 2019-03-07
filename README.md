@@ -78,6 +78,10 @@ Current I'm trying to create a conda environments for osx and linux that emulate
     ```
     Might be related to [this issue](https://github.com/ContinuumIO/anaconda-issues/issues/8423), but it's not clear if it has been fixed for GCC < 8.
 
+- **11035 + conda GCC 7.3 (?)**:
+    - ? with conda hdf5, pgplot, openblas, and lapack (?).
+        - Fails tests in mtx  and net with small numerical differences.
+
 ## Procedure
 
 ### osx
