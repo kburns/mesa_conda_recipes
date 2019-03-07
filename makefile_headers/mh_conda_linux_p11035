@@ -18,9 +18,9 @@ endif
 # NOTE: recent versions of mesa have required reduced optimization
 # in order to work with ifort; we suggest using gfortran instead of ifort if possible.
 
-#FC = $(CONDA_PREFIX)/bin/gfortran
-#CC = /usr/local/bin/gcc-7
-#CPP = /usr/local/bin/cpp-7
+#FC =  # Set by conda
+#CC =  # Set by conda
+#CPP =  # Set by conda
 SPECIAL_LINK_FLAGS = -Wl,-rpath,${CONDA_PREFIX}/lib
 
 

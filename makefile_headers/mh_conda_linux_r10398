@@ -18,10 +18,11 @@ endif
 # NOTE: recent versions of mesa have required reduced optimization
 # in order to work with ifort; we suggest using gfortran instead of ifort if possible.
 
-#FC = $(CONDA_PREFIX)/bin/gfortran
-#CC = $(CONDA_PREFIX)/bin/gcc
-#CPP = $(CONDA_PREFIX)/bin/cpp
-#SPECIAL_LINK_FLAGS = -Wl,-rpath,${CONDA_PREFIX}/lib
+#FC =  # Set by conda
+#CC =  # Set by conda
+#CPP =  # Set by conda
+SPECIAL_LINK_FLAGS = -Wl,-rpath,${CONDA_PREFIX}/lib
+
 
 # step 2) specify whether isnan is supported or not (NO LONGER NEEDED!)
 
@@ -39,7 +40,7 @@ LOAD_BLAS = -L$(CONDA_PREFIX)/lib -lblas
 # step 4) do you want to use PGPLOT with mesa/star?
 
 USE_PGSTAR = YES
-LOAD_PGPLOT = -L$(CONDA_PREFIX)/lib -lpgplot -lz
+LOAD_PGPLOT = -L$(CONDA_PREFIX)/lib -lpgplot -lz -lX11
 
 # NOTE: you need to have a PGPLOT built using the same fortran and c compiler as you
 # are using for mesa.
@@ -66,7 +67,7 @@ USE_GYRE = NO
 
 # step 8) now do the mesa install
 
-USE_OPENMP = NO
+USE_OPENMP = YES
 
 USE_STUB_FOR_CRLIBM = NO
 
