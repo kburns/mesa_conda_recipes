@@ -62,22 +62,12 @@ Current I'm trying to create a conda environments for osx and linux that emulate
 
 ### linux
 
-- **10398 + conda GCC 7.3 + conda HDF5**:
-    Building utils fails with the error:
-    ```
-    ../private/utils_openmp.f:38:13:
-
-              use omp_lib, only: OMP_GET_THREAD_NUM
-                 1
-    Fatal Error: Can't open module file 'omp_lib.mod' for reading at (1): No such file or directory
-    compilation terminated.
-    make: *** [utils_openmp.o] Error 1
-
-    /mnt/home/kburns/software/mesa-r10398/utils/make
-    FAILED
-    ```
-    Might be related to [this issue](https://github.com/ContinuumIO/anaconda-issues/issues/8423), but it's not clear if it has been fixed for GCC < 8.
-
+- **10398 + conda GCC 7.3 (failing)**:
+    - Fails with conda hdf5, pgplot, and openblas:
+        - Lapack installed but openblas gets picked up by linker.
+        - Fails tests in mtx and net with small numerical differences.
+        - If tests are skipped, installation completes but tutorial model segfaults.
+        
 - **11035 + conda GCC 7.3 (working)**:
     - Working with conda hdf5, pgplot, and openblas.
         - Lapack installed but openblas gets picked up by linker.
