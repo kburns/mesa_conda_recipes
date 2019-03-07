@@ -1,6 +1,5 @@
 name: mesa_conda
 channels:
-  - local
   - conda-forge/label/gcc7
   - conda-forge
   - defaults

@@ -96,10 +96,8 @@ Current I'm trying to create a conda environments for osx and linux that emulate
     ```
     ln -sfn $PWD/makefile_headers/mh_conda_osx_r10398 ~/Software/mesa-r10398/utils/makefile_header
     ```
-5. Build the conda dependencies and environemnt:
+5. Build the conda environemnt:
     ```
-    conda build ndiff_recipe
-    conda build makedepf90_recipe
     conda env create -f mesa_sdk_env.yaml
     ```
 6. Activate the environment to install and use MESA:
@@ -126,16 +124,11 @@ Current I'm trying to create a conda environments for osx and linux that emulate
 - [ ] Get conda linux build working
 - [ ] Create conda packages:
     - [x] ndiff (merged into conda-forge)
-    - [ ] makedepf90 (submitted to conda-forge)
+    - [x] makedepf90 (merged into conda-forge)
     - [ ] mesa (eventually)
 - [ ] Add gyre support
 
 ## Development notes
-
-### conda build
-
-We're building ndiff and makedepf90 using the conda-managed clang and gfortran compilers.
-For these to work, we need an old(?) mac SDK from [here](https://github.com/phracker/MacOSX-SDKs).
 
 ### rpath
 

@@ -1,6 +1,5 @@
 name: mesa_brew
 channels:
-  - local
   - conda-forge
   - defaults
 dependencies:
