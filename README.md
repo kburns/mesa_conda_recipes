@@ -44,6 +44,13 @@ Current I'm trying to create a conda environments for osx and linux that emulate
 
 ### linux
 
+- **11532 + conda GCC 7.3 (working)**:
+    - Working with conda hdf5, pgplot, and openblas.
+        - Lapack installed but openblas gets picked up by linker.
+        - Fails tests in mtx and net with small numerical differences.
+        - If tests are skipped, installation completes and tutorial model runs successfully.
+        - To get plots, X11 forwarding must be enabled in SSH to server and to worker inside salloc.
+        
 - **11035 + conda GCC 7.3 (working)**:
     - Working with conda hdf5, pgplot, and openblas.
         - Lapack installed but openblas gets picked up by linker.
@@ -108,6 +115,7 @@ Current I'm trying to create a conda environments for osx and linux that emulate
     # Attempt MESA installation
     export MESA_DIR=~/Software/mesa-r11532
     cd $MESA_DIR
+    export DYLD_LIBRARY_PATH=../../make:../make:$MESA_DIR/lib:$DYLD_LIBRARY_PATH
     ./clean
     ./install
     ```
@@ -179,4 +187,9 @@ The installation then seems to complete and the tests seem to pass, but the code
 
 Comping with GCC 7.4 eliminates the warnings and allows compilation to complete with the `-Werror` flag, but the same segfault still occurs.
 I'm going to the 11035 prelease to see if that works with GCC > 7.2, since it also seems to be better supported by pyMesa.
+
+### Numerical test failures
+
+The tests seem to fail with small numerical errors in the conda and brew builds when openblas's lapack library is picked up instead of the standalone lapack.
+It's easy to fix this in the brew builds, but its not clear how to do it with the conda builds, since they both put their libraries in the same place.
 
