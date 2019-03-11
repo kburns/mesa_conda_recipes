@@ -12,12 +12,22 @@ Current I'm trying to create a conda environments for osx and linux that emulate
     - Works with homebrew hdf5, pgplot, openblas, and lapack.
         - Prints various bounds warnings.
         - Installation completes and tutorial model runs successfully.
+    - Works with homebrew hdf5, pgplot, and openblas.
+        - Fails tests in mtx and net with small numerical differences.
+        - Prints various bounds warnings.
+        - If tests are skipped, installation completes and tutorial model runs successfully.
+    - Fails to build with gyre:
+        ```
+        /bin/sh: fpx3_deps: command not found
+        /bin/sh: fpx3: command not found
+        make: *** [gyre_lib.f90] Error 127
+        ```
 
 - **11035 + homebrew GCC 8.3 (working)**:
     - Works with homebrew hdf5, pgplot, and openblas.
         - Fails tests in mtx and net with small numerical differences.
         - Prints various bounds warnings.
-        - If tests are skipped, installation completes and tutorial model runs successfully.`.
+        - If tests are skipped, installation completes and tutorial model runs successfully.
     - Works with homebrew hdf5, pgplot, openblas, and lapack.
         - Prints various bounds warnings.
         - Installation completes and tutorial model runs successfully.
@@ -146,11 +156,11 @@ Current I'm trying to create a conda environments for osx and linux that emulate
 ## Future goals/plans
 
 - Get osx build working with conda-supplied compilers.
-- Get linux build working for 11532.
 - Get linux build to use lapack instead of openblas from conda.
-- Convert envs to mesa-sdk conda recipes
-- Build conda recipe for mesa
-- Build conda recipe for pymesa
+- Add support for gyre.
+- Convert envs to mesa-sdk conda recipes.
+- Build conda recipe for mesa.
+- Build conda recipe for pymesa.
 
 ## Development notes
 
