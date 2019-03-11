@@ -19,8 +19,8 @@ endif
 # in order to work with ifort; we suggest using gfortran instead of ifort if possible.
 
 FC = $(CONDA_PREFIX)/bin/gfortran
-CC = /usr/local/bin/gcc-7
-CPP = /usr/local/bin/cpp-7
+CC = $(CONDA_PREFIX)/bin/clang
+CPP = $(CONDA_PREFIX)/bin/clang-cpp
 SPECIAL_LINK_FLAGS = -Wl,-rpath,${CONDA_PREFIX}/lib
 
 

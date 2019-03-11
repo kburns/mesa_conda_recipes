@@ -74,7 +74,7 @@ USE_STUB_FOR_CRLIBM = NO
 
 # step 9) Build shared libraries? Needed if you want mesa to be usable in python
 
-USE_SHARED = NO
+USE_SHARED = YES
 
 
 #################################################################
@@ -132,7 +132,7 @@ ifeq ($(UNAME_S),Linux)
 endif
 ifeq ($(UNAME_S),Darwin)
    LIB_FLAGS = -dynamiclib
-   LD_FLAGS = -Wl,-rpath=../make:../../lib:$(MD)
+   LD_FLAGS = -Wl,-rpath,../make,-rpath,../../lib,-rpath,$(MD)
    LIB_SUFFIX = dylib
 endif
    LIB_TOOL = $(FC) $(LIB_FLAGS) $(FCopenmp) $(LD_FLAGS) -o

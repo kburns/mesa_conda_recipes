@@ -1,8 +1,10 @@
 name: mesa_conda
 channels:
+  - conda-forge/label/gcc7
   - conda-forge
   - defaults
 dependencies:
+  - clang
   - gfortran_osx-64==7.3.0
   - valgrind
   - openblas
