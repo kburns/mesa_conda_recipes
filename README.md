@@ -4,7 +4,7 @@ This repo contains in-progress work towards creating conda recipes for MESA buil
 
 Current I'm trying to create a conda environments for osx and linux that emulate the MESA SDK and allow for MESA to be built.
 
-## Status
+## Working builds
 
 ### osx
 
@@ -27,6 +27,33 @@ Current I'm trying to create a conda environments for osx and linux that emulate
             Error: GNU Extension: Nonstandard type declaration COMPLEX*16 at (1)
             ```
     - Fails with conda hdf5, pgplot, or openblas with "undefined symbols" errors.
+
+- **11035 + homebrew GCC 8.3 (working)**:
+    - Works with homebrew hdf5, pgplot, and openblas.
+        - Fails tests in mtx and net with small numerical differences.
+        - Prints various bounds warnings.
+        - If tests are skipped, installation completes and tutorial model runs successfully.`.
+    - Works with homebrew hdf5, pgplot, openblas, and lapack.
+        - Prints various bounds warnings.
+        - Installation completes and tutorial model runs successfully.
+
+- **11532 + homebrew GCC 8.3 (working)**:
+    - Works with homebrew hdf5, pgplot, openblas, and lapack.
+        - Prints various bounds warnings.
+        - Installation completes and tutorial model runs successfully.
+
+### linux
+
+- **11035 + conda GCC 7.3 (working)**:
+    - Working with conda hdf5, pgplot, and openblas.
+        - Lapack installed but openblas gets picked up by linker.
+        - Fails tests in mtx and net with small numerical differences.
+        - If tests are skipped, installation completes and tutorial model runs successfully.
+        - To get plots, X11 forwarding must be enabled in SSH to server and to worker inside salloc.
+
+## Working builds
+
+### osx
 
 - **10398 + homebrew GCC 7.4 (failing)**:
     - Need to disable HDF5 since homebrew version is build with GCC 8.3.
@@ -51,15 +78,6 @@ Current I'm trying to create a conda environments for osx and linux that emulate
        use hdf5
     ```
 
-- **11035 + homebrew GCC 8.3 (working)**:
-    - Works with homebrew hdf5, pgplot, and openblas.
-        - Fails tests in mtx and net with small numerical differences.
-        - Prints various bounds warnings.
-        - If tests are skipped, installation completes and tutorial model runs successfully.`.
-    - Works with homebrew hdf5, pgplot, openblas, and lapack.
-        - Prints various bounds warnings.
-        - Installation completes and tutorial model runs successfully.
-
 ### linux
 
 - **10398 + conda GCC 7.3 (failing)**:
@@ -67,13 +85,6 @@ Current I'm trying to create a conda environments for osx and linux that emulate
         - Lapack installed but openblas gets picked up by linker.
         - Fails tests in mtx and net with small numerical differences.
         - If tests are skipped, installation completes but tutorial model segfaults.
-        
-- **11035 + conda GCC 7.3 (working)**:
-    - Working with conda hdf5, pgplot, and openblas.
-        - Lapack installed but openblas gets picked up by linker.
-        - Fails tests in mtx and net with small numerical differences.
-        - If tests are skipped, installation completes and tutorial model runs successfully.
-        - To get plots, X11 forwarding must be enabled in SSH to server and to worker inside salloc.
 
 ## Procedure
 
