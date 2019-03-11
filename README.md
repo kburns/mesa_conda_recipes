@@ -8,6 +8,20 @@ Current I'm trying to create a conda environments for osx and linux that emulate
 
 ### osx
 
+- **11532 + homebrew GCC 8.3 (working)**:
+    - Works with homebrew hdf5, pgplot, openblas, and lapack.
+        - Prints various bounds warnings.
+        - Installation completes and tutorial model runs successfully.
+
+- **11035 + homebrew GCC 8.3 (working)**:
+    - Works with homebrew hdf5, pgplot, and openblas.
+        - Fails tests in mtx and net with small numerical differences.
+        - Prints various bounds warnings.
+        - If tests are skipped, installation completes and tutorial model runs successfully.`.
+    - Works with homebrew hdf5, pgplot, openblas, and lapack.
+        - Prints various bounds warnings.
+        - Installation completes and tutorial model runs successfully.
+
 - **10398 + spack GCC 7.2 (working)**:
     - Works with spack hdf5 and homebrew pgplot.
     - Works with spack openblas:
@@ -28,20 +42,6 @@ Current I'm trying to create a conda environments for osx and linux that emulate
             ```
     - Fails with conda hdf5, pgplot, or openblas with "undefined symbols" errors.
 
-- **11035 + homebrew GCC 8.3 (working)**:
-    - Works with homebrew hdf5, pgplot, and openblas.
-        - Fails tests in mtx and net with small numerical differences.
-        - Prints various bounds warnings.
-        - If tests are skipped, installation completes and tutorial model runs successfully.`.
-    - Works with homebrew hdf5, pgplot, openblas, and lapack.
-        - Prints various bounds warnings.
-        - Installation completes and tutorial model runs successfully.
-
-- **11532 + homebrew GCC 8.3 (working)**:
-    - Works with homebrew hdf5, pgplot, openblas, and lapack.
-        - Prints various bounds warnings.
-        - Installation completes and tutorial model runs successfully.
-
 ### linux
 
 - **11035 + conda GCC 7.3 (working)**:
@@ -51,9 +51,23 @@ Current I'm trying to create a conda environments for osx and linux that emulate
         - If tests are skipped, installation completes and tutorial model runs successfully.
         - To get plots, X11 forwarding must be enabled in SSH to server and to worker inside salloc.
 
-## Working builds
+## Failing builds
 
 ### osx
+
+- **11035 + homebrew GCC 7.4 (failing)**:
+    - Need to disable HDF5 since homebrew version is built with GCC 8.3.
+    - Installation fails on building the kap module saying it needs HDF5, even though it is disabled in the makefile_header:
+    ```
+    ../private/kap_aesopus.f90:28:6:
+       use hdf5
+    ```
+
+- **10398 + homebrew GCC 8.3 (failing)**:
+    - Fails with homebrew hdf5, pgplot, and openblas:
+        - Fails tests in mtx and net with small numerical differences.
+        - Raises errors on various bounds warnings.
+        - If tests are skipped and `-Werror` flag is removed, installation completes but tutorial model segfaults.
 
 - **10398 + homebrew GCC 7.4 (failing)**:
     - Need to disable HDF5 since homebrew version is build with GCC 8.3.
@@ -63,20 +77,6 @@ Current I'm trying to create a conda environments for osx and linux that emulate
     - Fails with homebrew pgplot, openblas, and lapack:
         - Fails tests in rates with small numerical differences.
         - If tests are skipped, installation completes but tutorial model segfaults.
-
-- **10398 + homebrew GCC 8.3 (failing)**:
-    - Fails with homebrew hdf5, pgplot, and openblas:
-        - Fails tests in mtx and net with small numerical differences.
-        - Raises errors on various bounds warnings.
-        - If tests are skipped and `-Werror` flag is removed, installation completes but tutorial model segfaults.
-
-- **11035 + homebrew GCC 7.4 (failing)**:
-    - Need to disable HDF5 since homebrew version is built with GCC 8.3.
-    - Installation fails on building the kap module saying it needs HDF5, even though it is disabled in the makefile_header:
-    ```
-    ../private/kap_aesopus.f90:28:6:
-       use hdf5
-    ```
 
 ### linux
 
@@ -90,24 +90,46 @@ Current I'm trying to create a conda environments for osx and linux that emulate
 
 ### osx
 
-1. Install the osx 10.9 SDK from [here](https://github.com/phracker/MacOSX-SDKs) to `/opt/MacOSX10.9.sdk`.
-2. Install homebrew packages for gcc, openblas, lapack, hdf5, and pgplot.
-3. Download MESA to `~/Software/mesa-r10398`.
-4. Replace the makefile_header with a symlink to the one from this repo (backup the original first, if you want):
+1. Install homebrew packages for gcc, openblas, lapack, hdf5, and pgplot.
+2. Download MESA to `~/Software/mesa-r11532`.
+3. Replace the makefile_header with a symlink to the one from this repo (backup the original first, if you want):
     ```
-    ln -sfn $PWD/makefile_headers/mh_conda_osx_r10398 ~/Software/mesa-r10398/utils/makefile_header
+    ln -nsf $PWD/makefile_headers/mh_brew_osx_r11532 ~/Software/mesa-r11532/utils/makefile_header
     ```
-5. Build the conda environemnt:
+4. Build the conda environemnt:
     ```
-    conda env create -f mesa_sdk_env.yaml
+    conda env create -f env_brew_osx.yaml
     ```
-6. Activate the environment to install and use MESA:
+5. Activate the environment to install and use MESA:
     ```
     # Activate environment
-    conda activate mesa_sdk
+    conda activate mesa_brew
 
     # Attempt MESA installation
-    export MESA_DIR=~/Software/mesa-r10398
+    export MESA_DIR=~/Software/mesa-r11532
+    cd $MESA_DIR
+    ./clean
+    ./install
+    ```
+
+### linux
+
+1. Download MESA to `~/Software/mesa-r11532`.
+2. Replace the makefile_header with a symlink to the one from this repo (backup the original first, if you want):
+    ```
+    ln -nsf $PWD/makefile_headers/mh_conda_linux_r11532 ~/Software/mesa-r11532/utils/makefile_header
+    ```
+3. Build the conda environemnt:
+    ```
+    conda env create -f env_conda_linux.yaml
+    ```
+4. Activate the environment to install and use MESA:
+    ```
+    # Activate environment
+    conda activate mesa_conda
+
+    # Attempt MESA installation
+    export MESA_DIR=~/Software/mesa-r11532
     cd $MESA_DIR
     ./clean
     ./install
@@ -115,19 +137,12 @@ Current I'm trying to create a conda environments for osx and linux that emulate
 
 ## Future goals/plans
 
-- [ ] Figure out and fix source of compiler warnings so we dont have to remove `-Werror`
-- [ ] Migrate remaining osx dependencies from homebrew to conda:
-    - [ ] pgplot
-    - [ ] hdf5
-    - [ ] lapack
-    - [ ] blas
-    - [ ] gcc
-- [ ] Get conda linux build working
-- [ ] Create conda packages:
-    - [x] ndiff (merged into conda-forge)
-    - [x] makedepf90 (merged into conda-forge)
-    - [ ] mesa (eventually)
-- [ ] Add gyre support
+- Get osx build working with conda-supplied compilers.
+- Get linux build working for 11532.
+- Get linux build to use lapack instead of openblas from conda.
+- Convert envs to mesa-sdk conda recipes
+- Build conda recipe for mesa
+- Build conda recipe for pymesa
 
 ## Development notes
 
