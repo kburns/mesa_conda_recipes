@@ -23,15 +23,6 @@ Current I'm trying to create a conda environments for osx and linux that emulate
         make: *** [gyre_lib.f90] Error 127
         ```
 
-- **11035 + homebrew GCC 8.3 (working)**:
-    - Works with homebrew hdf5, pgplot, and openblas.
-        - Fails tests in mtx and net with small numerical differences.
-        - Prints various bounds warnings.
-        - If tests are skipped, installation completes and tutorial model runs successfully.
-    - Works with homebrew hdf5, pgplot, openblas, and lapack.
-        - Prints various bounds warnings.
-        - Installation completes and tutorial model runs successfully.
-
 - **10398 + spack GCC 7.2 (working)**:
     - Works with spack hdf5 and homebrew pgplot.
     - Works with spack openblas:
@@ -60,19 +51,12 @@ Current I'm trying to create a conda environments for osx and linux that emulate
         - Fails tests in mtx and net with small numerical differences.
         - If tests are skipped, installation completes and tutorial model runs successfully.
         - To get plots, X11 forwarding must be enabled in SSH to server and to worker inside salloc.
-        
-- **11035 + conda GCC 7.3 (working)**:
-    - Working with conda hdf5, pgplot, and openblas.
-        - Lapack installed but openblas gets picked up by linker.
-        - Fails tests in mtx and net with small numerical differences.
-        - If tests are skipped, installation completes and tutorial model runs successfully.
-        - To get plots, X11 forwarding must be enabled in SSH to server and to worker inside salloc.
 
 ## Failing builds
 
 ### osx
 
-- **11035 + homebrew GCC 7.4 (failing)**:
+- **11532 + homebrew GCC 7.4 (failing)**:
     - Need to disable HDF5 since homebrew version is built with GCC 8.3.
     - Installation fails on building the kap module saying it needs HDF5, even though it is disabled in the makefile_header:
     ```
@@ -155,6 +139,7 @@ Current I'm trying to create a conda environments for osx and linux that emulate
 
 ## Future goals/plans
 
+- Get builds working with shared libraries.
 - Get osx build working with conda-supplied compilers.
 - Get linux build to use lapack instead of openblas from conda.
 - Add support for gyre.
@@ -196,7 +181,6 @@ Removing `-Werror` will prevent these from halting the installation.
 The installation then seems to complete and the tests seem to pass, but the code segfaults upon running the tutorial model.
 
 Comping with GCC 7.4 eliminates the warnings and allows compilation to complete with the `-Werror` flag, but the same segfault still occurs.
-I'm going to the 11035 prelease to see if that works with GCC > 7.2, since it also seems to be better supported by pyMesa.
 
 ### Numerical test failures
 
