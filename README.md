@@ -1,8 +1,8 @@
 # MESA Conda Recipes
 
-This repo contains in-progress work towards creating conda recipes for MESA build requirement and perhaps eventually MESA itself.
+This repo contains in-progress work towards creating conda recipes for MESA build requirements and perhaps eventually MESA itself.
 
-Current I'm trying to create a conda environments for osx and linux that emulate the MESA SDK and allow for MESA to be built.
+Current I'm trying to create conda environments for osx and linux that emulate the MESA SDK and allow for MESA to be built and work with PyMesa.
 
 ## Working builds
 
