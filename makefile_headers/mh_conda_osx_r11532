@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# NOTE: this default version of makefile_header
-# assumes you will be using the mesasdk.
-# if you do not want that, you can use the
-# makefile_header_non_mesasdk file as a template.
-
 # NOTE: MESA is no longer supported on 32-bit systems.  This isn't by design;
 # we simply haven't been able to get it to work!  So if you really-really want
 # to use an antique 32-bit system for mesa, you'll have to try to make it work yourself.
@@ -18,26 +13,15 @@ endif
 endif
 
 
-ifndef MESASDK_ROOT
-ifndef MESA_DIR_INTENTIONALLY_EMPTY
-$(error MESASDK_ROOT enviroment variable is not set)
-endif
-endif
-
-#mesasdk_init adds $MESASDK_ROOT to $PATH
-ifeq ($(findstring $(MESASDK_ROOT), $(PATH)),)
-ifndef MESA_DIR_INTENTIONALLY_EMPTY
-$(error The MESASDK has not been initialized)
-endif
-endif
-
 # step 1) specify your compilers
 
 # NOTE: recent versions of mesa have required reduced optimization
 # in order to work with ifort; we suggest using gfortran instead of ifort if possible.
 
-FC = gfortran
-CC = gcc
+FC = $(CONDA_PREFIX)/bin/gfortran
+CC = $(CONDA_PREFIX)/bin/clang
+CPP = $(CONDA_PREFIX)/bin/clang-cpp
+SPECIAL_LINK_FLAGS = -Wl,-rpath,${CONDA_PREFIX}/lib
 
 
 # step 2) specify whether isnan is supported or not (NO LONGER NEEDED!)
@@ -49,14 +33,14 @@ CC = gcc
 
 WHICH_LAPACK =
 WHICH_BLAS =
-LOAD_LAPACK = `mesasdk_lapack_link`
-LOAD_BLAS = `mesasdk_blas_link`
+LOAD_LAPACK = -L$(CONDA_PREFIX)/lib -llapack
+LOAD_BLAS = -L$(CONDA_PREFIX)/lib -lblas
 
 
 # step 4) do you want to use PGPLOT with mesa/star?
 
 USE_PGSTAR = YES
-LOAD_PGPLOT = `mesasdk_pgplot_link` -lz
+LOAD_PGPLOT = -L$(CONDA_PREFIX)/lib -lpgplot -lz
 
 
 # step 5) do you want to use SE with mesa/star?
@@ -66,16 +50,16 @@ LOAD_PGPLOT = `mesasdk_pgplot_link` -lz
 # step 6) do you want to use HDF5 with mesa/star?
 # Currently we use HDF5 for weak nuclear reaction rates
 USE_HDF5 = YES
-LOAD_HDF5 = `mesasdk_hdf5_link`
-INCLUDE_HDF5 = -I${MESASDK_ROOT}/include
+LOAD_HDF5 = -L$(CONDA_PREFIX)/lib -lhdf5_fortran -lhdf5 -lz
+INCLUDE_HDF5 = -I$(CONDA_PREFIX)/include
 
 
 # step 7) do you want to use GYRE?
 
 # if you don't plan to use GYRE and want to skip building it, then
-#USE_GYRE = NO
+USE_GYRE = NO
 # if you want to have GYRE built along with the rest of mesa, then
-USE_GYRE = YES
+#USE_GYRE = YES
 
 
 # step 8) now do the mesa install
@@ -96,7 +80,8 @@ USE_SHARED = NO
 # It simply defines things for use by the module makefiles.
 
 SKIP_NAN_TRAPS = YES
-#      fill_arrays_with_NaNs = .true. ! in star, do this along with checking for nans
+#SKIP_NAN_TRAPS = NO
+# if not SKIP_NAN_TRAPS, then also add $(FCtrapNANs) to FCbasic2
 
 FCbasic = -Wno-uninitialized -fno-range-check -fmax-errors=7 $(SPECIAL_FC_FLAGS) $(FCbasic2)
 FCbasic2 =  -fprotect-parens -fno-sign-zero -fbacktrace -ggdb -finit-real=snan
@@ -133,28 +118,27 @@ endif
 
 # Flags needed for shared libraries
 ifeq ($(USE_SHARED), YES)
-   MD := $(shell realpath $(MESA_DIR)/lib) # we need this to be the evaluated at the start
-      # before the module/ makefiles override MESA_DIR
    UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
+   MD := $(shell realpath $(MESA_DIR)/lib)
    # Rpaths need to resolve relative to module/test folder plus the final location of the library
    LIB_FLAGS = -fPIC -shared
    LD_FLAGS = -Wl,-rpath=../make:../../lib:$(MD)
    LIB_SUFFIX = so
 endif
 ifeq ($(UNAME_S),Darwin)
+# Macs dont have realpath so cd to dir and get its location manually
+# We check if folder exists first, to stop adipls getting confused
+# when it can't find ../../lib
+ifneq ($(wildcard $(MESA_DIR)/lib/.*),)
+   MD := $(shell cd "$(MESA_DIR)/lib"; pwd -P)
+endif
    LIB_FLAGS = -dynamiclib
-   LD_FLAGS = -Wl,-rpath=../make:../../lib:$(MD)
+   LD_FLAGS = -Wl,-rpath,../make,-rpath,../../lib,-rpath,$(MD)
    LIB_SUFFIX = dylib
 endif
    LIB_TOOL = $(FC) $(LIB_FLAGS) $(FCopenmp) $(LD_FLAGS) -o
 
-# Check we have new enough sdk
-ifndef MESA_DIR_INTENTIONALLY_EMPTY
-ifeq ($(wildcard $(MESASDK_ROOT)/lib/liblapack.$(LIB_SUFFIX)),)
-$(error Shared libraries requires a SDK released after 20170821)
-endif
-endif
 else
    # Static library options
    LIB_TOOL = ar crs
@@ -227,7 +211,7 @@ LOAD_MESA_MACRO = \
    -lionization -latm -lcolors $(LOAD_MESA_MICRO)
 
 # star_support uses macro (for now, LOAD_MESA_STAR_SUPPORT just = LOAD_MESA_MACRO)
-LOAD_MESA_STAR_SUPPORT = $(LOAD_MESA_MACRO) $(LD_FLAGS)
+LOAD_MESA_STAR_SUPPORT = $(LOAD_MESA_MACRO) -lgyre $(LD_FLAGS)
 
 # star uses star_support
 LOAD_STAR_MODS = -lstar $(LOAD_MESA_STAR_SUPPORT)
@@ -244,7 +228,7 @@ LOAD_MESA_BINARY = -L$(MESA_LIB_DIR) -lbinary $(STAR_LOAD_LIST)
 SLOW_COMPILE = -fno-var-tracking
 
 # LOADER creates executables
-LOADER = $(FC)
+LOADER = $(FC) $(SPECIAL_LINK_FLAGS)
 
 STAR_WORK_OBJS = \
    run_star_extras.o run_star.o

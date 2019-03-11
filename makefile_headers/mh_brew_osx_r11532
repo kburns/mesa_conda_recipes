@@ -70,7 +70,7 @@ USE_STUB_FOR_CRLIBM = NO
 
 # step 9) Build shared libraries? Needed if you want mesa to be usable in python
 
-USE_SHARED = NO
+USE_SHARED = YES
 
 
 #################################################################
@@ -139,13 +139,6 @@ endif
 endif
    LIB_TOOL = $(FC) $(LIB_FLAGS) $(FCopenmp) $(LD_FLAGS) -o
 
-
-# # Check we have new enough sdk
-# ifndef MESA_DIR_INTENTIONALLY_EMPTY
-# ifeq ($(wildcard $(MESASDK_ROOT)/lib/liblapack.$(LIB_SUFFIX)),)
-# $(error Shared libraries requires a SDK released after 20170821)
-# endif
-# endif
 else
    # Static library options
    LIB_TOOL = ar crs

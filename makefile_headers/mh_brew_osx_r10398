@@ -41,9 +41,6 @@ LOAD_BLAS = -L/usr/local/opt/openblas/lib -lblas
 USE_PGSTAR = YES
 LOAD_PGPLOT = -L/usr/local/opt/pgplot/lib -lpgplot -lz
 
-# NOTE: you need to have a PGPLOT built using the same fortran and c compiler as you
-# are using for mesa.
-
 
 # step 5) do you want to use SE with mesa/star?
 

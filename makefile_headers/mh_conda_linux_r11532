@@ -42,9 +42,6 @@ LOAD_BLAS = -L$(CONDA_PREFIX)/lib -lblas
 USE_PGSTAR = YES
 LOAD_PGPLOT = -L$(CONDA_PREFIX)/lib -lpgplot -lz -lX11
 
-# NOTE: you need to have a PGPLOT built using the same fortran and c compiler as you
-# are using for mesa.
-
 
 # step 5) do you want to use SE with mesa/star?
 
@@ -142,12 +139,6 @@ endif
 endif
    LIB_TOOL = $(FC) $(LIB_FLAGS) $(FCopenmp) $(LD_FLAGS) -o
 
-# # Check we have new enough sdk
-# ifndef MESA_DIR_INTENTIONALLY_EMPTY
-# ifeq ($(wildcard $(MESASDK_ROOT)/lib/liblapack.$(LIB_SUFFIX)),)
-# $(error Shared libraries requires a SDK released after 20170821)
-# endif
-# endif
 else
    # Static library options
    LIB_TOOL = ar crs
