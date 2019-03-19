@@ -1,0 +1,35 @@
+# MESA_DIR = ../../
+
+#################################################################
+
+# STEP 1: set up the standard info
+
+include $(MESA_DIR)/utils/makefile_header
+
+.PHONY: build install rebuild remake
+
+build:
+ifeq ($(USE_SHARED), YES)
+	./configure --enable-shared=yes --enable-static=no CC=$(CC) CFLAGS=$(SPECIAL_C_FLAGS) --prefix=$(MESA_DIR)
+else
+	./configure --enable-shared=no --enable-static=yes CC=$(CC) CFLAGS=$(SPECIAL_C_FLAGS)
+endif
+
+install:
+	@cp crlibm.h $(MESA_DIR)/include
+ifeq ($(USE_SHARED), NO)
+	@ar -r .libs/libcrlibm.a scs_lib/*.o
+else
+	@cp scs_lib/.libs/libscs.*$(LIB_SUFFIX)* $(MESA_DIR)/lib
+endif
+	@cp .libs/libcrlibm.*$(LIB_SUFFIX)* $(MESA_DIR)/lib
+
+
+#Used when packaging updates to crlibm
+
+rebuild:
+	cd crlibm; make clean; cd ../; mv crlibm crlibm-1.0beta4; tar cvf crlibm-1.0beta4.tar.gz crlibm-1.0beta4; rm -rf crlibm-1.0beta4
+
+remake:
+	make clean
+	autoreconf -vfi

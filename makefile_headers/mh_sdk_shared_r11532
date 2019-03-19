@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# NOTE: this default version of makefile_header
+# assumes you will be using the mesasdk.
+# if you do not want that, you can use the
+# makefile_header_non_mesasdk file as a template.
+
 # NOTE: MESA is no longer supported on 32-bit systems.  This isn't by design;
 # we simply haven't been able to get it to work!  So if you really-really want
 # to use an antique 32-bit system for mesa, you'll have to try to make it work yourself.
@@ -13,14 +18,26 @@ endif
 endif
 
 
+ifndef MESASDK_ROOT
+ifndef MESA_DIR_INTENTIONALLY_EMPTY
+$(error MESASDK_ROOT enviroment variable is not set)
+endif
+endif
+
+#mesasdk_init adds $MESASDK_ROOT to $PATH
+ifeq ($(findstring $(MESASDK_ROOT), $(PATH)),)
+ifndef MESA_DIR_INTENTIONALLY_EMPTY
+$(error The MESASDK has not been initialized)
+endif
+endif
+
 # step 1) specify your compilers
 
 # NOTE: recent versions of mesa have required reduced optimization
 # in order to work with ifort; we suggest using gfortran instead of ifort if possible.
 
-FC = /usr/local/bin/gfortran-8
-CC = /usr/local/bin/gcc-8
-CPP = /usr/local/bin/cpp-8
+FC = gfortran
+CC = gcc
 
 
 # step 2) specify whether isnan is supported or not (NO LONGER NEEDED!)
@@ -32,15 +49,14 @@ CPP = /usr/local/bin/cpp-8
 
 WHICH_LAPACK =
 WHICH_BLAS =
-LOAD_LAPACK = -L/usr/local/opt/lapack/lib -llapack
-LOAD_BLAS = -L/usr/local/opt/openblas/lib -lblas
+LOAD_LAPACK = `mesasdk_lapack_link`
+LOAD_BLAS = `mesasdk_blas_link`
 
 
 # step 4) do you want to use PGPLOT with mesa/star?
 
 USE_PGSTAR = YES
-LOAD_PGPLOT = -L/usr/local/opt/pgplot/lib -lpgplot -lz
-PGPLOT_DIR = /usr/local/opt/pgplot/share
+LOAD_PGPLOT = `mesasdk_pgplot_link` -lz
 
 
 # step 5) do you want to use SE with mesa/star?
@@ -50,16 +66,16 @@ PGPLOT_DIR = /usr/local/opt/pgplot/share
 # step 6) do you want to use HDF5 with mesa/star?
 # Currently we use HDF5 for weak nuclear reaction rates
 USE_HDF5 = YES
-LOAD_HDF5 = -L/usr/local/opt/hdf5/lib -lhdf5_fortran -lhdf5 -lz
-INCLUDE_HDF5 = -I/usr/local/opt/hdf5/include
+LOAD_HDF5 = `mesasdk_hdf5_link`
+INCLUDE_HDF5 = -I${MESASDK_ROOT}/include
 
 
 # step 7) do you want to use GYRE?
 
 # if you don't plan to use GYRE and want to skip building it, then
-USE_GYRE = NO
+#USE_GYRE = NO
 # if you want to have GYRE built along with the rest of mesa, then
-#USE_GYRE = YES
+USE_GYRE = YES
 
 
 # step 8) now do the mesa install
@@ -139,6 +155,12 @@ endif
 endif
    LIB_TOOL = $(FC) $(LIB_FLAGS) $(FCopenmp) $(LD_FLAGS) -o
 
+# Check we have new enough sdk
+ifndef MESA_DIR_INTENTIONALLY_EMPTY
+ifeq ($(wildcard $(MESASDK_ROOT)/lib/liblapack.$(LIB_SUFFIX)),)
+$(error Shared libraries requires a SDK released after 20170821)
+endif
+endif
 else
    # Static library options
    LIB_TOOL = ar crs
