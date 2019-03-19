@@ -8,6 +8,11 @@ Current I'm trying to create conda environments for osx and linux that emulate t
 
 ### osx
 
+- **11532 + MESA SDK (working)**:
+    - Fails to build with `USE_SHARED = TRUE`:
+        - Corrected makefile_header to pass `install_name`.
+        - Need to correct all `make clean` commands to delete `*.dylib`.
+        - Corrected `crlibm/makefile_crlibm` to set it's own `install_name` correctly via the configured prefix.
 - **11532 + homebrew GCC 8.3 (working)**:
     - Works with homebrew hdf5, pgplot, openblas, and lapack.
         - Prints various bounds warnings.
